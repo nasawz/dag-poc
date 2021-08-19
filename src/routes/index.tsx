@@ -7,6 +7,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ComponentTreePanel } from '../components/component-tree-panel';
 import { ComponentConfigPanel } from '../components/component-config-panel';
+import { DAGCanvas } from '../components/dag-canvas';
 
 export interface IAppProps {
     experimentId?
@@ -27,6 +28,10 @@ export default function App(props: IAppProps) {
                             className={styles.nodeSourceTree}
                         />
                         <div className={styles.editPanel}>
+                            <DAGCanvas
+                                experimentId={experimentId}
+                                className={styles.dagCanvas}
+                            />
                             <ComponentConfigPanel
                                 experimentId={experimentId}
                                 className={styles.confPanel}

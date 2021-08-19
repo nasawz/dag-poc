@@ -2,7 +2,7 @@
   "name": "@nasawz/dag-poc",
   "scripts": {
     "start": "webpack serve",
-    "start:standalone": "webpack serve --env standalone --port 8303",
+    "start:standalone": "webpack serve --env standalone",
     "build": "concurrently yarn:build:*",
     "build:webpack": "webpack --mode=production",
     "analyze": "webpack --mode=production --env analyze",
