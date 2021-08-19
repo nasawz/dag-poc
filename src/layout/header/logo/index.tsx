@@ -1,9 +1,9 @@
-import React from 'react'
-import { ApartmentOutlined } from '@ant-design/icons'
-import css from './index.module.less'
+import React from "react";
+import { ApartmentOutlined } from "@ant-design/icons";
+import css from "./index.module.less";
 
 interface Props {
-  border?: boolean
+  border?: boolean;
 }
 
 export const SimpleLogo: React.FC<Props> = ({ border }) => {
@@ -11,5 +11,5 @@ export const SimpleLogo: React.FC<Props> = ({ border }) => {
     <div className={`${css.root} `}>
       <ApartmentOutlined className={css.logo} />
     </div>
-  )
-}
+  );
+};

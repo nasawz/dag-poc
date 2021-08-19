@@ -1,37 +1,37 @@
-import React, { useCallback, useRef } from 'react'
-import { DeleteOutlined } from '@ant-design/icons'
-import { useClickAway } from 'ahooks'
-import { Menu } from '@antv/x6-react-components/es/menu'
-import '@antv/x6-react-components/es/menu/style/index.less'
+import React, { useCallback, useRef } from "react";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useClickAway } from "ahooks";
+import { Menu } from "@antv/x6-react-components/es/menu";
+import "@antv/x6-react-components/es/menu/style/index.less";
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 // import { graphPointToOffsetPoint } from '@/pages/common//utils/graph'
-import styles from './index.module.less'
-import { useExperimentGraph } from '../../../../../rx-models/experiment-graph'
-import { graphPointToOffsetPoint } from '../../../../common/utils/graph'
+import styles from "./index.module.less";
+import { useExperimentGraph } from "../../../../../rx-models/experiment-graph";
+import { graphPointToOffsetPoint } from "../../../../common/utils/graph";
 
 interface Props {
-  experimentId: string
-  data: any
+  experimentId: string;
+  data: any;
 }
 
 export const EdgeContextMenu: React.FC<Props> = (props) => {
-  const { experimentId, data } = props
-  const containerRef = useRef<HTMLDivElement>(null as any)
-  const expGraph = useExperimentGraph(experimentId)
+  const { experimentId, data } = props;
+  const containerRef = useRef<HTMLDivElement>(null as any);
+  const expGraph = useExperimentGraph(experimentId);
 
   useClickAway(() => {
-    expGraph.clearContextMenuInfo()
-  }, containerRef)
+    expGraph.clearContextMenuInfo();
+  }, containerRef);
 
   const onDeleteEdge = useCallback(() => {
-    expGraph.deleteEdgeFromContextMenu(data.edge)
-  }, [expGraph, data])
+    expGraph.deleteEdgeFromContextMenu(data.edge);
+  }, [expGraph, data]);
 
   const { x: left, y: top } = graphPointToOffsetPoint(
     expGraph.graph!,
     data,
-    expGraph.wrapper!,
-  )
+    expGraph.wrapper!
+  );
 
   return (
     <div
@@ -47,5 +47,5 @@ export const EdgeContextMenu: React.FC<Props> = (props) => {
         />
       </Menu>
     </div>
-  )
-}
+  );
+};

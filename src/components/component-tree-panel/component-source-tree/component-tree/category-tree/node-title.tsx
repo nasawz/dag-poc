@@ -1,34 +1,34 @@
-import React, { useCallback, useState, useRef } from 'react'
-import { toLower, unescape } from 'lodash-es'
-import { Popover, Tag } from 'antd'
-import { DragSource, ConnectDragPreview, ConnectDragSource } from 'react-dnd'
-import { DatabaseFilled, ReadOutlined } from '@ant-design/icons'
-import marked from 'marked'
-import styles from './node-title.module.less'
-import { useSafeSetHTML } from '../../../../../hooks/useSafeSetHtml'
-import { DRAGGABLE_ALGO_COMPONENT } from '../../../../../constants/graph'
+import React, { useCallback, useState, useRef } from "react";
+import { toLower, unescape } from "lodash-es";
+import { Popover, Tag } from "antd";
+import { DragSource, ConnectDragPreview, ConnectDragSource } from "react-dnd";
+import { DatabaseFilled, ReadOutlined } from "@ant-design/icons";
+import marked from "marked";
+import styles from "./node-title.module.less";
+import { useSafeSetHTML } from "../../../../../hooks/useSafeSetHtml";
+import { DRAGGABLE_ALGO_COMPONENT } from "../../../../../constants/graph";
 
 marked.setOptions({
   gfm: true,
   breaks: true,
-})
+});
 
 const Document = (props: { node: any }) => {
-  const { node } = props
-  const descriptionNodeRef = useRef<HTMLDivElement>(null)
-  const { description, id, tag = '' } = node
+  const { node } = props;
+  const descriptionNodeRef = useRef<HTMLDivElement>(null);
+  const { description, id, tag = "" } = node;
 
   const htmlStr = marked(
-    unescape(description || '暂无文档').replace(/\\n/gi, ' \n '),
-  )
-  useSafeSetHTML(descriptionNodeRef, htmlStr)
+    unescape(description || "暂无文档").replace(/\\n/gi, " \n ")
+  );
+  useSafeSetHTML(descriptionNodeRef, htmlStr);
 
   return (
     <div className={styles.popover}>
       {tag ? (
         <div className={styles.tag}>
           <span className={styles.label}> 标签: </span>
-          {tag.split(',').map((str: string) => (
+          {tag.split(",").map((str: string) => (
             <Tag key={str}>{str}</Tag>
           ))}
         </div>
@@ -42,44 +42,44 @@ const Document = (props: { node: any }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 interface Props {
-  node: any
-  searchKey: string
-  isDragging: boolean
-  connectDragSource: ConnectDragSource
-  connectDragPreview: ConnectDragPreview
+  node: any;
+  searchKey: string;
+  isDragging: boolean;
+  connectDragSource: ConnectDragSource;
+  connectDragPreview: ConnectDragPreview;
 }
 
 const InnerNodeTitle = (props: Props) => {
   const {
     node = {},
-    searchKey = '',
+    searchKey = "",
     connectDragPreview,
     connectDragSource,
-  } = props
-  const { name = '', isDir } = node
-  const [visible, setVisible] = useState<boolean>(false)
+  } = props;
+  const { name = "", isDir } = node;
+  const [visible, setVisible] = useState<boolean>(false);
   const onMouseIn = useCallback(() => {
-    setVisible(true)
-  }, [])
+    setVisible(true);
+  }, []);
   const onMouseOut = useCallback(() => {
-    setVisible(false)
-  }, [])
+    setVisible(false);
+  }, []);
 
   // 文件夹
   if (isDir) {
-    return <div className={styles.folder}>{name}</div>
+    return <div className={styles.folder}>{name}</div>;
   }
 
-  const keywordIdx = searchKey ? toLower(name).indexOf(toLower(searchKey)) : -1
+  const keywordIdx = searchKey ? toLower(name).indexOf(toLower(searchKey)) : -1;
 
   // 搜索高亮
   if (keywordIdx > -1) {
-    const beforeStr = name.substr(0, keywordIdx)
-    const afterStr = name.substr(keywordIdx + searchKey.length)
+    const beforeStr = name.substr(0, keywordIdx);
+    const afterStr = name.substr(keywordIdx + searchKey.length);
 
     return connectDragPreview(
       connectDragSource(
@@ -90,9 +90,9 @@ const InnerNodeTitle = (props: Props) => {
             <span className={styles.keyword}>{searchKey}</span>
             {afterStr}
           </span>
-        </span>,
-      ),
-    )
+        </span>
+      )
+    );
   }
 
   return (
@@ -106,8 +106,8 @@ const InnerNodeTitle = (props: Props) => {
           <div className={styles.node}>
             <DatabaseFilled className={styles.nodeIcon} />
             <span className={styles.label}>{name}</span>
-          </div>,
-        ),
+          </div>
+        )
       )}
       {visible && (
         <Popover
@@ -123,8 +123,8 @@ const InnerNodeTitle = (props: Props) => {
         </Popover>
       )}
     </div>
-  )
-}
+  );
+};
 
 export const NodeTitle = DragSource(
   DRAGGABLE_ALGO_COMPONENT,
@@ -137,5 +137,5 @@ export const NodeTitle = DragSource(
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging(),
-  }),
-)(InnerNodeTitle)
+  })
+)(InnerNodeTitle);

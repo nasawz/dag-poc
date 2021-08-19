@@ -1,30 +1,30 @@
-import React, { useRef } from 'react'
-import classname from 'classnames'
-import { Popover, Tag, Tooltip } from 'antd'
-import { DatabaseFilled, ProfileTwoTone } from '@ant-design/icons'
-import marked from 'marked'
-import { ConnectDragPreview, ConnectDragSource, DragSource } from 'react-dnd'
-import { unescape } from '../../../../../common/utils';
-import styles from './component-item.module.less'
-import { useSafeSetHTML } from '../../../../../hooks/useSafeSetHtml'
-import { DRAGGABLE_ALGO_COMPONENT } from '../../../../../constants/graph'
-import { ItemName } from '../../../../item-name/item-name'
+import React, { useRef } from "react";
+import classname from "classnames";
+import { Popover, Tag, Tooltip } from "antd";
+import { DatabaseFilled, ProfileTwoTone } from "@ant-design/icons";
+import marked from "marked";
+import { ConnectDragPreview, ConnectDragSource, DragSource } from "react-dnd";
+import { unescape } from "../../../../../common/utils";
+import styles from "./component-item.module.less";
+import { useSafeSetHTML } from "../../../../../hooks/useSafeSetHtml";
+import { DRAGGABLE_ALGO_COMPONENT } from "../../../../../constants/graph";
+import { ItemName } from "../../../../item-name/item-name";
 
 marked.setOptions({
   gfm: true,
   breaks: true,
-})
+});
 
 const Markdown2html: React.FC<{ description: string; tag: string }> = (
-  props,
+  props
 ) => {
-  const { description, tag } = props
-  const descriptionElementRef = useRef<HTMLDivElement>(null)
+  const { description, tag } = props;
+  const descriptionElementRef = useRef<HTMLDivElement>(null);
 
   useSafeSetHTML(
     descriptionElementRef,
-    marked(unescape(description).replace(/\\n/gi, ' \n ')),
-  )
+    marked(unescape(description).replace(/\\n/gi, " \n "))
+  );
 
   return (
     <div className={styles.componentDescription}>
@@ -32,23 +32,23 @@ const Markdown2html: React.FC<{ description: string; tag: string }> = (
       {tag ? (
         <div className={styles.tag} key="2">
           <span className={styles.label}> 标签: </span>
-          {tag.split(',').map((str, idx) => (
+          {tag.split(",").map((str, idx) => (
             <Tag key={str + idx}>{str}</Tag>
           ))}
         </div>
       ) : null}
     </div>
-  )
-}
+  );
+};
 
 const renderSearchInfo = (params: {
-  id: number | string
-  name: string
-  catName: string
-  description: string
-  tag: string
+  id: number | string;
+  name: string;
+  catName: string;
+  description: string;
+  tag: string;
 }) => {
-  const { id, name, catName, description = '暂无数据', tag } = params
+  const { id, name, catName, description = "暂无数据", tag } = params;
 
   return (
     <>
@@ -78,24 +78,24 @@ const renderSearchInfo = (params: {
           key="description"
         >
           <div
-            className={classname(styles.description, 'gray', 'text-overflow')}
+            className={classname(styles.description, "gray", "text-overflow")}
           >
             {description}
           </div>
         </Popover>
       )}
     </>
-  )
-}
+  );
+};
 
 // ! 这里没有理解怎么会走到渲染这个链路上，因此代码先保留，后续可以再删掉或者使用
 const renderStatus = (params: {
-  changeType: string
-  isDeprecated: boolean
-  changeMessage: string
+  changeType: string;
+  isDeprecated: boolean;
+  changeMessage: string;
 }) => {
-  const { changeType, isDeprecated, changeMessage } = params
-  const renderItems = []
+  const { changeType, isDeprecated, changeMessage } = params;
+  const renderItems = [];
   if (changeType) {
     renderItems.push(
       <Popover
@@ -105,43 +105,43 @@ const renderStatus = (params: {
         <span className={classname(styles.itemLable, styles.gre)}>
           {changeType.toLowerCase()}
         </span>
-      </Popover>,
-    )
+      </Popover>
+    );
   }
 
   if (isDeprecated) {
     renderItems.push(
-      <span className={classname(styles.itemLable, 'gray')} key="status">
+      <span className={classname(styles.itemLable, "gray")} key="status">
         已废弃
-      </span>,
-    )
+      </span>
+    );
   }
 
-  return renderItems
-}
+  return renderItems;
+};
 
 interface Node {
-  keyword: string
-  algoSourceType: number
-  name: string
-  id: number
-  catName: string
-  description: string
-  tag: string
-  changeType: string
-  isDeprecated: boolean
-  changeMessage: string
+  keyword: string;
+  algoSourceType: number;
+  name: string;
+  id: number;
+  catName: string;
+  description: string;
+  tag: string;
+  changeType: string;
+  isDeprecated: boolean;
+  changeMessage: string;
 }
 
 interface NodeTitleProps {
-  data: Node
-  connectDragSource: ConnectDragSource
-  connectDragPreview: ConnectDragPreview
+  data: Node;
+  connectDragSource: ConnectDragSource;
+  connectDragPreview: ConnectDragPreview;
 }
 
 const InnerNodeTitle: React.FC<NodeTitleProps> = (props) => {
-  const { data, connectDragPreview, connectDragSource } = props
-  const { keyword, algoSourceType, name } = data
+  const { data, connectDragPreview, connectDragSource } = props;
+  const { keyword, algoSourceType, name } = data;
   return (
     <div>
       {connectDragPreview(
@@ -153,13 +153,13 @@ const InnerNodeTitle: React.FC<NodeTitleProps> = (props) => {
           >
             <DatabaseFilled className={styles.nodeIcon} />
             <ItemName data={{ name, keyword }} />
-          </span>,
-        ),
+          </span>
+        )
       )}
       {keyword ? renderSearchInfo(data) : renderStatus(data)}
     </div>
-  )
-}
+  );
+};
 
 const NodeTitle = DragSource(
   DRAGGABLE_ALGO_COMPONENT,
@@ -172,13 +172,13 @@ const NodeTitle = DragSource(
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging(),
-  }),
-)(InnerNodeTitle)
+  })
+)(InnerNodeTitle);
 
 interface Props {
-  data: any
+  data: any;
 }
 
 export const ComponentItem: React.FC<Props> = ({ data = {} }) => {
-  return <div className={styles.itemBlock}>{<NodeTitle data={data} />}</div>
-}
+  return <div className={styles.itemBlock}>{<NodeTitle data={data} />}</div>;
+};
