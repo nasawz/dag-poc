@@ -3,6 +3,7 @@ import { Form, Input } from 'antd'
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import 'antd/lib/style/index.css'
 import { useObservableState } from '../../../hooks/useObservableState'
+import { useExperimentGraph } from '../../../rx-models/experiment-graph'
 
 export interface Props {
   name: string
@@ -17,20 +18,20 @@ export const NodeFormDemo: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm()
 
-  // const expGraph = useExperimentGraph(experimentId)
-  // const [node] = useObservableState(() => expGraph.activeNodeInstance$)
+  const expGraph = useExperimentGraph(experimentId)
+  const [node] = useObservableState(() => expGraph.activeNodeInstance$)
 
   const onValuesChange = async ({ name }: { name: string }) => {
-    // if (node.name !== name) {
-    //   await expGraph.renameNode(nodeId, name)
-    // }
+    if (node.name !== name) {
+      await expGraph.renameNode(nodeId, name)
+    }
   }
 
   return (
     <Form
       form={form}
       layout="vertical"
-      // initialValues={{ name: node ? node.name : '' }}
+      initialValues={{ name: node ? node.name : '' }}
       onValuesChange={onValuesChange}
       requiredMark={false}
     >

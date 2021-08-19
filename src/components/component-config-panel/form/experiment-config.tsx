@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Input, Radio } from 'antd'
 import { useObservableState } from '../../../hooks/useObservableState'
+import { useExperimentGraph } from '../../../rx-models/experiment-graph'
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 
 export interface Props {
@@ -11,27 +12,27 @@ export interface Props {
 export const ExperimentForm: React.FC<Props> = ({ experimentId, name }) => {
   const [form] = Form.useForm()
 
-  // const expGraph = useExperimentGraph(experimentId)
-  // const [activeExperiment] = useObservableState(expGraph.experiment$)
+  const expGraph = useExperimentGraph(experimentId)
+  const [activeExperiment] = useObservableState(expGraph.experiment$)
 
-  // const onValuesChange = ({ experimentName }: { experimentName: string }) => {
-  //   expGraph.experiment$.next({ ...activeExperiment, name: experimentName })
-  // }
+  const onValuesChange = ({ experimentName }: { experimentName: string }) => {
+    expGraph.experiment$.next({ ...activeExperiment, name: experimentName })
+  }
 
-  // React.useEffect(() => {
-  //   form.setFieldsValue({
-  //     experimentName: activeExperiment ? activeExperiment.name : '',
-  //   })
-  // }, [activeExperiment])
+  React.useEffect(() => {
+    form.setFieldsValue({
+      experimentName: activeExperiment ? activeExperiment.name : '',
+    })
+  }, [activeExperiment])
 
   return (
     <Form
       form={form}
       layout="vertical"
-      // initialValues={{
-      //   experimentName: activeExperiment ? activeExperiment.name : '',
-      // }}
-      // onValuesChange={onValuesChange}
+      initialValues={{
+        experimentName: activeExperiment ? activeExperiment.name : '',
+      }}
+      onValuesChange={onValuesChange}
       requiredMark={false}
     >
       <Form.Item name="experimentName" label="实验名称">
