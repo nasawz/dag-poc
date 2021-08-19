@@ -3,6 +3,10 @@ import classNames from 'classnames'
 
 
 import styles from './index.module.less'
+import { useExperimentGraph, useUnmountExperimentGraph } from '../../rx-models/experiment-graph'
+import { CanvasToolbar } from './canvas-toolbar'
+import { BottomToolbar } from './bottom-toolbar'
+import { CanvasContent } from './canvas-content'
 
 interface Props {
   experimentId: string
@@ -11,27 +15,27 @@ interface Props {
 
 export const DAGCanvas: React.FC<Props> = (props) => {
   const { experimentId, className } = props
-//   const expGraph = useExperimentGraph(experimentId)
+  const expGraph = useExperimentGraph(experimentId)
 
-//   // 处理画布卸载
-//   useUnmountExperimentGraph(experimentId)
+  // 处理画布卸载
+  useUnmountExperimentGraph(experimentId)
 
-//   // 自定义算法组件的渲染控制
-//   useEffect(() => {
-//     ;(window as any).renderForm = expGraph.setActiveAlgoData
-//     return () => {
-//       delete (window as any).renderForm
-//     }
-//   }, [expGraph])
+  // 自定义算法组件的渲染控制
+  useEffect(() => {
+    ;(window as any).renderForm = expGraph.setActiveAlgoData
+    return () => {
+      delete (window as any).renderForm
+    }
+  }, [expGraph])
 
   return (
     <div className={classNames(styles.dagContainer, className)}>
-      {/* <CanvasToolbar experimentId={experimentId} />
-      <CanvasContent
+     <CanvasToolbar experimentId={experimentId} />
+        <CanvasContent
         experimentId={experimentId}
         className={styles.canvasContent}
       />
-      <BottomToolbar experimentId={experimentId} /> */}
+     <BottomToolbar experimentId={experimentId} />
     </div>
   )
 }

@@ -6,7 +6,8 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons'
 import { useClickAway } from 'ahooks'
-import { Menu } from '@antv/x6-react-components'
+import { Menu } from '@antv/x6-react-components/es/menu'
+import '@antv/x6-react-components/es/menu/style/index.less'
 import styles from './index.module.less'
 import { useObservableState } from '../../../../../hooks/useObservableState'
 import { useExperimentGraph } from '../../../../../rx-models/experiment-graph'

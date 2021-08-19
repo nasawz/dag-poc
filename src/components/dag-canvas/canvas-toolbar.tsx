@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import { Toolbar } from '@antv/x6-react-components'
+import  {Toolbar}  from '@antv/x6-react-components/es/toolbar'
+import '@antv/x6-react-components/es/toolbar/style/index.less'
 import {
   GatewayOutlined,
   GroupOutlined,
@@ -7,15 +8,15 @@ import {
   RollbackOutlined,
   UngroupOutlined,
 } from '@ant-design/icons'
-// import { RxInput } from '@/component/rx-component/rx-input'
 import { BehaviorSubject } from 'rxjs'
-import styles from './canvas-toolbar.module.less'
 import { useExperimentGraph } from '../../rx-models/experiment-graph'
 import { formatGroupInfoToNodeMeta } from '../../rx-models/graph-util'
 import { addNodeGroup } from '../../mock/graph'
 import { showModal } from '../modal'
 import { useObservableState } from '../../hooks/useObservableState'
 import { RxInput } from '../rx-component/rx-input'
+import { BaseNode } from '../common/graph-common/shape/node'
+import styles from './canvas-toolbar.module.less'
 
 const { Item, Group } = Toolbar
 interface Props {
@@ -37,7 +38,7 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
   const [activeNodeInstance] = useObservableState(
     () => expGraph.activeNodeInstance$,
   )
-  const [selectedNodes]:any = useObservableState(() => expGraph.selectedNodes$)
+  const [selectedNodes]: any = useObservableState(() => expGraph.selectedNodes$)
   const [selectedGroup] = useObservableState(() => expGraph.selectedGroup$)
 
   const onClickItem = useCallback(
@@ -78,11 +79,11 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
               addNodeGroup(value$.getValue())
                 .then((res: any) => {
                   modal.close()
-                  selectedNodes!.forEach((node) => {
+                  selectedNodes!.forEach((node: BaseNode) => {
                     const nodeData = node.getData<any>()
                     node.setData({ ...nodeData, groupId: res.data.group.id })
                   })
-                  const nodeMetas: any[] = selectedNodes!.map((node) =>
+                  const nodeMetas: any[] = selectedNodes!.map((node: BaseNode) =>
                     node.getData<any>(),
                   )
                   expGraph.addNode(
@@ -119,7 +120,7 @@ export const CanvasToolbar: React.FC<Props> = (props) => {
     !!selectedNodes &&
     !!selectedNodes.length &&
     selectedNodes.length > 1 &&
-    selectedNodes.every((node) => {
+    selectedNodes.every((node: BaseNode) => {
       return node.isNode() && !node.getData<any>().groupId
     })
 
