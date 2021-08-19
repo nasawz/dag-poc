@@ -334,6 +334,8 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     this.executionStatusQuerySub = timer(0, 5000).subscribe(
       async (resPromise) => {
         const execStatusRes = await queryGraphStatus()
+        console.log(execStatusRes);
+        
         this.executionStatus$.next(execStatusRes.data as any)
         this.updateEdgeStatus()
         // 执行完成时停止查询状态

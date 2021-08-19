@@ -68,8 +68,8 @@ export class GraphCore<
   // 右键菜单的订阅
   private contextMenuSub?: Subscription
 
-  // 节点右键菜单的订阅
-  private nodeContextMenuSub?: Subscription
+  // // 节点右键菜单的订阅
+  // private nodeContextMenuSub?: Subscription
 
   // 选中节点的订阅
   private selectNodeSub?: Subscription
@@ -142,6 +142,7 @@ export class GraphCore<
     this.setMeta(params)
     if (this.isMetaValid) {
       const { wrapper, options, nodeMetas, edgeMetas } = this
+      
       const width = wrapper!.clientWidth
       const height = wrapper!.clientHeight
       const graph = new Graph({ ...options, width, height })
@@ -199,9 +200,9 @@ export class GraphCore<
         },
       )
 
-      this.nodeContextMenuSub = nodeContextMenuObs.subscribe((data) => {
-        this.onNodeContextMenu(data)
-      })
+      // this.nodeContextMenuSub = nodeContextMenuObs.subscribe((data) => {
+      //   this.onNodeContextMenu(data)
+      // })
 
       this.contextMenuSub = merge<ContextMenuInfo>(
         nodeContextMenuObs,
@@ -223,9 +224,11 @@ export class GraphCore<
           graph.off('selection:changed', handler)
         },
       ).subscribe((args) => {
+        
         const { removed, selected } = args
         setCellsSelectedStatus(removed, false)
         setCellsSelectedStatus(selected, true)
+        
         this.onSelectNodes(selected)
       })
 
@@ -263,8 +266,7 @@ export class GraphCore<
         (handler) => {
           graph.off('node:change:position', handler)
         },
-      )
-        .pipe(
+      ).pipe(
           tap((args) => {
             this.onMoveNodeStart(args)
           }),
@@ -393,12 +395,13 @@ export class GraphCore<
     }
   }
 
-  onNodeContextMenu(data: ContextMenuInfo): any {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[GraphCore] context menu info:', data)
-    }
-  }
+  // onNodeContextMenu(data: ContextMenuInfo): any {
+  //   if (process.env.NODE_ENV === 'development') {
+  //     console.log('[GraphCore] context menu info:', data)
+  //   }
+  // }
 
+  // ! 此处被[ExperimentGraph]方法覆盖并不会执行
   onSelectNodes(nodes: N[]) {
     this.selectedNodes$.next(nodes)
     if (process.env.NODE_ENV === 'development') {
@@ -640,7 +643,7 @@ export class GraphCore<
   dispose() {
     this.windowResizeSub?.unsubscribe()
     this.contextMenuSub?.unsubscribe()
-    this.nodeContextMenuSub?.unsubscribe()
+    // this.nodeContextMenuSub?.unsubscribe()
     this.selectNodeSub?.unsubscribe()
     this.connectNodeSub?.unsubscribe()
     this.connectionRemovedSub?.unsubscribe()
