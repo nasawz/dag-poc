@@ -11,8 +11,8 @@
             "site": {
                 "use": "@cloudbase/framework-plugin-website",
                 "inputs": {
-                    "installCommand": "yarn",
-                    "buildCommand": "yarn build:webpack",
+                    "installCommand": "echo 'yarn'",
+                    "buildCommand": "echo 'yarn build:webpack'",
                     "outputPath": "dist",
                     "cloudPath": "{{env.deployManagePath}}",
                     "ignore": [
