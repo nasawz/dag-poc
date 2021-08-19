@@ -384,6 +384,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   }
 
   renderNode(nodeMeta: NodeMeta): BaseNode | undefined {
+      
     const { experimentId } = this
     const { data } = nodeMeta
     const { type, includedNodes = [] } = data as any

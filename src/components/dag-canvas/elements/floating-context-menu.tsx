@@ -34,7 +34,7 @@ interface Props {
 export const FloatingContextMenu: React.FC<Props> = (props) => {
   const { experimentId } = props
   const expGraph = useExperimentGraph(experimentId)
-  const [contextMenuInfo]: any = useObservableState(() => expGraph.contextMenuInfo$)
+  const [contextMenuInfo] = useObservableState(() => expGraph.contextMenuInfo$)
 
   if (!contextMenuInfo?.type) {
     return null

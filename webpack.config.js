@@ -4,6 +4,8 @@ const { getThemeVariables } = require("antd/dist/theme");
 const CopyPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
+process.env.NODE_ENV = 'development'; // Or 'development'
+
 module.exports = (webpackConfigEnv, argv) => {
   const defaultConfig = singleSpaDefaults({
     orgName: "nasawz",
