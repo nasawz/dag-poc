@@ -7,6 +7,8 @@ import { SimpleLogo } from './logo'
 import { ExperimentTitle } from './experiment-title'
 
 import css from './index.module.less'
+import { useExperimentGraph } from '../../rx-models/experiment-graph'
+import { useObservableState } from '../../hooks/useObservableState'
 
 const { Header } = Layout
 
@@ -15,8 +17,8 @@ interface IProps {
 }
 
 export const GuideHeader: React.FC<IProps> = (props) => {
-  // const expGraph = useExperimentGraph(props.experimentId)
-  // const [activeExperiment] = useObservableState(expGraph.experiment$)
+  const expGraph = useExperimentGraph(props.experimentId)
+  const [activeExperiment] = useObservableState(expGraph.experiment$)
 
   const openGithub = () => {
     // window.open(
@@ -30,7 +32,7 @@ export const GuideHeader: React.FC<IProps> = (props) => {
       <Header className={css.header}>
         <div className={css.headerLeft}>
           <SimpleLogo />
-          {/* <ExperimentTitle experimentName={activeExperiment.name} /> */}
+          <ExperimentTitle experimentName={activeExperiment.name} />
         </div>
         <div className={css.headerRight}>
           <div className={css.doc}>

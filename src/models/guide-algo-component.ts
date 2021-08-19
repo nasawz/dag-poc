@@ -75,14 +75,10 @@ export const useGuideAlgoComponentModel = () => {
 
     // 加载组件
     const loadComponentNodes = useCallback(() => {
-        console.log('------------loadComponentNodes');
-        
         setLoading(true)
         const load = async () => {
             try {
                 if (algoData) {
-                    console.log('algoData',algoData);
-                    
                     setComponentTreeNodes(algoData)
                 }
             } finally {

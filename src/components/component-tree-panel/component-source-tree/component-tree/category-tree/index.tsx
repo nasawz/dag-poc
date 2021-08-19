@@ -15,8 +15,6 @@ const FolderIcon = ({ expanded }: { expanded: boolean }) => {
 
 export const CategoryTree = () => {
   const { componentTreeNodes } = useBetween(useGuideAlgoComponentModel)
-  console.log('componentTreeNodes',componentTreeNodes);
-  
 
   const renderTree = useCallback(
     (treeList: any[] = [], searchKey: string = '') => {
@@ -53,8 +51,6 @@ export const CategoryTree = () => {
   )
 
   const treeList = componentTreeNodes.filter((node) => node.status !== 4)
-console.log('treeList',treeList);
-console.log('----------',componentTreeNodes);
 
   return (
     <div className={styles.list}>
