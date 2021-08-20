@@ -271,7 +271,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         projectName: "sre_mpi_algo_dev",
         gmtCreate: "2020-08-18 02:21:41",
         description: "用户流失数据建模demo",
-        name: "建模流程 DEMO",
+        name: "DAG 有向无环",
         id: 353355,
       };
       this.experiment$.next(res);
@@ -640,6 +640,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     try {
       // eslint-disable-next-line: no-this-assignment
       const { experimentId, nodeMetas = [] } = this;
+
       await runGraph(nodeMetas);
       this.running$.next(true);
       this.clearContextMenuInfo();

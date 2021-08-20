@@ -4,6 +4,7 @@ interface NodeParams {
   name: string;
   x: number;
   y: number;
+  [others: string]: any 
 }
 
 export const copyNode = ({ name, x, y }: NodeParams) => {
@@ -49,38 +50,40 @@ export const copyNode = ({ name, x, y }: NodeParams) => {
     groupId: 0,
   };
 };
-export const addNode = ({ name, x, y }: NodeParams) => {
+export const addNode = ({ name, x, y,...others }: NodeParams) => {
+  console.log(others);
+  
   const id = `${Date.now()}`;
   return {
     id,
     name,
     inPorts: [
-      {
-        tableName: "germany_credit_data",
-        sequence: 1,
-        description: "输入1",
-        id: id + "_in_1",
-      },
-      {
-        tableName: "germany_credit_data",
-        sequence: 2,
-        description: "输入2",
-        id: id + "_in_2",
-      },
+      // {
+      //   tableName: "germany_credit_data",
+      //   sequence: 1,
+      //   description: "输入1",
+      //   id: id + "_in_1",
+      // },
+      // {
+      //   tableName: "germany_credit_data",
+      //   sequence: 2,
+      //   description: "输入2",
+      //   id: id + "_in_2",
+      // },
     ],
     outPorts: [
       {
-        tableName: "germany_credit_data",
+        // tableName: "germany_credit_data",
         sequence: 1,
         description: "输出表1",
         id: id + "_out_1",
       },
-      {
-        tableName: "germany_credit_data",
-        sequence: 2,
-        description: "输出表2",
-        id: id + "_out_2",
-      },
+      // {
+      //   tableName: "germany_credit_data",
+      //   sequence: 2,
+      //   description: "输出表2",
+      //   id: id + "_out_2",
+      // },
     ],
     positionX: x,
     positionY: y,
@@ -114,7 +117,11 @@ export const addNodeGroup = async (groupName: string) => {
   };
 };
 
+
 const initData = {
+  nodes:[],links:[]
+}
+const initData1 = {
   nodes: [
     {
       id: "1603716783816",
