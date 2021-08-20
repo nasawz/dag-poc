@@ -1,25 +1,25 @@
-import React, { useState } from 'react'
-import { Input } from 'antd'
-import { useDebounceFn } from 'ahooks'
-import styles from './index.module.less'
-import { useBetween } from 'use-between'
-import { useGuideAlgoComponentModel } from '../../../../models/guide-algo-component'
+import React, { useState } from "react";
+import { Input } from "antd";
+import { useDebounceFn } from "ahooks";
+import styles from "./index.module.less";
+import { useBetween } from "use-between";
+import { useGuideAlgoComponentModel } from "../../../../models/guide-algo-component";
 
-const { Search } = Input
+const { Search } = Input;
 
 export const SearchInput = () => {
-  const [value, setValue] = useState<string>('')
-  const { search, setKeyword } = useBetween(useGuideAlgoComponentModel)
+  const [value, setValue] = useState<string>("");
+  const { search, setKeyword } = useBetween(useGuideAlgoComponentModel);
 
   const { run: onDebouncedSearch } = useDebounceFn(
     (v: string) => {
       if (!v) {
-        return
+        return;
       }
-      search({ keyword: v })
+      search({ keyword: v });
     },
-    { wait: 500 },
-  )
+    { wait: 500 }
+  );
 
   return (
     <div className={styles.searchInput}>
@@ -29,14 +29,14 @@ export const SearchInput = () => {
         value={value}
         allowClear={true}
         onChange={(e) => {
-          const v = e.target.value
+          const v = e.target.value;
           if (!v) {
-            setKeyword('')
+            setKeyword("");
           }
-          setValue(v)
+          setValue(v);
         }}
         onSearch={onDebouncedSearch}
       />
     </div>
-  )
-}
+  );
+};

@@ -1,9 +1,9 @@
-import { maxBy, minBy } from 'lodash-es'
-import { NExperimentGraph } from '../../../rx-models/typing'
+import { maxBy, minBy } from "lodash-es";
+import { NExperimentGraph } from "../../../rx-models/typing";
 
 interface BasicPoint {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 /**
@@ -12,14 +12,14 @@ interface BasicPoint {
  */
 export function calcPointsInfo(points: BasicPoint[]) {
   if (!Array.isArray(points) || !points.length) {
-    throw new Error('计算坐标边缘必须传入一组坐标')
+    throw new Error("计算坐标边缘必须传入一组坐标");
   }
-  const minX = minBy(points, (point: BasicPoint) => point.x)!.x
-  const minY = minBy(points, (point: BasicPoint) => point.y)!.y
-  const maxX = maxBy(points, (point: BasicPoint) => point.x)!.x
-  const maxY = maxBy(points, (point: BasicPoint) => point.y)!.y
-  const middleX = (minX + maxX) / 2
-  const middleY = (minY + maxY) / 2
+  const minX = minBy(points, (point: BasicPoint) => point.x)!.x;
+  const minY = minBy(points, (point: BasicPoint) => point.y)!.y;
+  const maxX = maxBy(points, (point: BasicPoint) => point.x)!.x;
+  const maxY = maxBy(points, (point: BasicPoint) => point.y)!.y;
+  const middleX = (minX + maxX) / 2;
+  const middleY = (minY + maxY) / 2;
 
   return {
     minX,
@@ -28,7 +28,7 @@ export function calcPointsInfo(points: BasicPoint[]) {
     maxY,
     middleX,
     middleY,
-  }
+  };
 }
 
 /**
@@ -38,13 +38,13 @@ export function calcPointsInfo(points: BasicPoint[]) {
  */
 export function transformPointsToOrigin(
   points: BasicPoint[],
-  origin: BasicPoint,
+  origin: BasicPoint
 ): BasicPoint[] {
   return points.map((point) => ({
     ...point,
     x: point.x - origin.x,
     y: point.y - origin.y,
-  }))
+  }));
 }
 
 /**
@@ -54,22 +54,22 @@ export function transformPointsToOrigin(
  */
 export function revertPointsToOrigin(
   points: BasicPoint[],
-  origin: BasicPoint,
+  origin: BasicPoint
 ): BasicPoint[] {
   return points.map((point) => ({
     ...point,
     x: point.x + origin.x,
     y: point.y + origin.y,
-  }))
+  }));
 }
 
 export function formatNodeToGraphNodeConf(originNode: {
-  id: number
-  nodeInstanceId?: number
-  positionX: number
-  positionY: number
+  id: number;
+  nodeInstanceId?: number;
+  positionX: number;
+  positionY: number;
 }): any {
-  const { id, nodeInstanceId, positionX, positionY } = originNode
+  const { id, nodeInstanceId, positionX, positionY } = originNode;
   return {
     ...originNode,
     x: positionX || 0,
@@ -82,7 +82,7 @@ export function formatNodeToGraphNodeConf(originNode: {
       groups: {
         inputPorts: {
           position: {
-            name: 'top',
+            name: "top",
             args: {
               dr: 0,
               dx: 0,
@@ -91,20 +91,20 @@ export function formatNodeToGraphNodeConf(originNode: {
           },
           attrs: {
             circle: {
-              fill: '#ffffff',
-              stroke: '#31d0c6',
+              fill: "#ffffff",
+              stroke: "#31d0c6",
               strokeWidth: 1,
               r: 4,
-              style: 'cursor: default;',
+              style: "cursor: default;",
             },
             text: {
-              fill: '#6a6c8a',
+              fill: "#6a6c8a",
             },
           },
         },
         outputPorts: {
           position: {
-            name: 'bottom',
+            name: "bottom",
             args: {
               dr: 0,
               dx: 0,
@@ -113,59 +113,59 @@ export function formatNodeToGraphNodeConf(originNode: {
           },
           attrs: {
             circle: {
-              fill: '#ffffff',
-              stroke: '#31d0c6',
+              fill: "#ffffff",
+              stroke: "#31d0c6",
               strokeWidth: 1,
               r: 4,
-              style: 'cursor: crosshair;',
+              style: "cursor: crosshair;",
             },
             text: {
-              fill: '#6a6c8a',
+              fill: "#6a6c8a",
             },
           },
         },
       },
     },
-  }
+  };
 }
 /**
  * 将实验图节点信息转换为节点和边的配置
  * @param graph
  */
 export function formatExperimentGraph(graph: any = {}) {
-  const { nodes = [], links = [], groups = [] } = graph
+  const { nodes = [], links = [], groups = [] } = graph;
   const formattedNodes = nodes.map((node: any) =>
-    formatNodeToGraphNodeConf(node),
-  )
+    formatNodeToGraphNodeConf(node)
+  );
 
   const formattedEdges = links.map((link: any) => {
-    const { source, target } = link
+    const { source, target } = link;
     return {
       ...link,
       source: source.toString(),
       target: target.toString(),
-      label: '',
-    }
-  })
+      label: "",
+    };
+  });
 
   const groupNodeMap = groups.reduce(
     (mapResult: any, currentGroup: NExperimentGraph.Group) => {
-      const { id } = currentGroup
+      const { id } = currentGroup;
       return {
         ...mapResult,
         [id]:
           formattedNodes.filter(
-            (node: any) => node.groupId.toString() === id.toString(),
+            (node: any) => node.groupId.toString() === id.toString()
           ) || [],
-      }
+      };
     },
-    {},
-  )
+    {}
+  );
 
   return {
     nodes: formattedNodes,
     edges: formattedEdges,
     groups,
     groupNodeMap,
-  }
+  };
 }

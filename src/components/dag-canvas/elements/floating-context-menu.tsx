@@ -1,43 +1,45 @@
-import React from 'react'
-import { useObservableState } from '../../../hooks/useObservableState'
-import { useExperimentGraph } from '../../../rx-models/experiment-graph'
-import { EdgeContextMenu } from './context-menu/edge-context-menu'
-import { GraphContextMenu } from './context-menu/graph-context-menu'
-import { NodeContextMenu } from './context-menu/node-context-menu'
-import css from './floating-context-menu.module.less'
+import React from "react";
+import { useObservableState } from "../../../hooks/useObservableState";
+import { useExperimentGraph } from "../../../rx-models/experiment-graph";
+import { EdgeContextMenu } from "./context-menu/edge-context-menu";
+import { GraphContextMenu } from "./context-menu/graph-context-menu";
+import { NodeContextMenu } from "./context-menu/node-context-menu";
+import css from "./floating-context-menu.module.less";
 
 interface ContextMenuProps {
-  experimentId: string
-  menuType: 'node' | 'edge' | 'graph'
-  menuData: any
+  experimentId: string;
+  menuType: "node" | "edge" | "graph";
+  menuData: any;
 }
 
 export const ContextMenu: React.FC<ContextMenuProps> = (props) => {
-  const { experimentId, menuType, menuData } = props
+  const { experimentId, menuType, menuData } = props;
 
   switch (menuType) {
-    case 'edge':
-      return <EdgeContextMenu experimentId={experimentId} data={menuData} />
-    case 'graph':
-      return <GraphContextMenu experimentId={experimentId} data={menuData} />
-    case 'node':
-      return <NodeContextMenu experimentId={experimentId} data={menuData} />
+    case "edge":
+      return <EdgeContextMenu experimentId={experimentId} data={menuData} />;
+    case "graph":
+      return <GraphContextMenu experimentId={experimentId} data={menuData} />;
+    case "node":
+      return <NodeContextMenu experimentId={experimentId} data={menuData} />;
     default:
-      return null
+      return null;
   }
-}
+};
 
 interface Props {
-  experimentId: string
+  experimentId: string;
 }
 
 export const FloatingContextMenu: React.FC<Props> = (props) => {
-  const { experimentId } = props
-  const expGraph = useExperimentGraph(experimentId)
-  const [contextMenuInfo] = useObservableState(() => expGraph.contextMenuInfo$)
+  const { experimentId } = props;
+  const expGraph = useExperimentGraph(experimentId);
+  const [contextMenuInfo]: any = useObservableState(
+    () => expGraph.contextMenuInfo$
+  );
 
   if (!contextMenuInfo?.type) {
-    return null
+    return null;
   }
 
   return (
@@ -48,5 +50,5 @@ export const FloatingContextMenu: React.FC<Props> = (props) => {
         menuType={contextMenuInfo.type}
       />
     </div>
-  )
-}
+  );
+};

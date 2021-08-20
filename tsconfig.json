@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es5",
     "jsx": "react-jsx",
-    "declarationDir": "dist"
+    "declaration": false
   },
   "files": ["src/nasawz-dag-poc.tsx"],
   "include": ["src/**/*"],

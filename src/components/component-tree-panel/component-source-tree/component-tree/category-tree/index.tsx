@@ -1,27 +1,27 @@
-import React, { useCallback } from 'react'
+import React, { useCallback } from "react";
 // import { useBetween } from 'use-between'
-import { Tree } from 'antd'
-import { FolderFilled, FolderOpenFilled } from '@ant-design/icons'
-import { NodeTitle } from './node-title'
-import styles from './index.module.less'
-import { useBetween } from 'use-between'
-import { useGuideAlgoComponentModel } from '../../../../../models/guide-algo-component'
+import { Tree } from "antd";
+import { FolderFilled, FolderOpenFilled } from "@ant-design/icons";
+import { NodeTitle } from "./node-title";
+import styles from "./index.module.less";
+import { useBetween } from "use-between";
+import { useGuideAlgoComponentModel } from "../../../../../models/guide-algo-component";
 
-const { DirectoryTree, TreeNode } = Tree
+const { DirectoryTree, TreeNode } = Tree;
 
 const FolderIcon = ({ expanded }: { expanded: boolean }) => {
-  return expanded ? <FolderOpenFilled /> : <FolderFilled />
-}
+  return expanded ? <FolderOpenFilled /> : <FolderFilled />;
+};
 
 export const CategoryTree = () => {
-  const { componentTreeNodes } = useBetween(useGuideAlgoComponentModel)
+  const { componentTreeNodes } = useBetween(useGuideAlgoComponentModel);
 
   const renderTree = useCallback(
-    (treeList: any[] = [], searchKey: string = '') => {
+    (treeList: any[] = [], searchKey: string = "") => {
       return treeList.map((item) => {
-        const { isDir, id, treeData } = item
-        const key = id.toString()
-        const title = <NodeTitle node={item} searchKey={searchKey} />
+        const { isDir, id, treeData } = item;
+        const key = id.toString();
+        const title = <NodeTitle node={item} searchKey={searchKey} />;
 
         if (isDir) {
           return (
@@ -33,7 +33,7 @@ export const CategoryTree = () => {
             >
               {renderTree(treeData, searchKey)}
             </TreeNode>
-          )
+          );
         }
 
         return (
@@ -44,13 +44,13 @@ export const CategoryTree = () => {
             title={title}
             className={styles.treeNode}
           />
-        )
-      })
+        );
+      });
     },
-    [],
-  )
+    []
+  );
 
-  const treeList = componentTreeNodes.filter((node) => node.status !== 4)
+  const treeList = componentTreeNodes.filter((node) => node.status !== 4);
 
   return (
     <div className={styles.list}>
@@ -59,10 +59,10 @@ export const CategoryTree = () => {
         selectable={false}
         autoExpandParent={true}
         className={styles.tree}
-        defaultExpandedKeys={['recentlyUsed']}
+        defaultExpandedKeys={["recentlyUsed"]}
       >
         {renderTree(treeList)}
       </DirectoryTree>
     </div>
-  )
-}
+  );
+};

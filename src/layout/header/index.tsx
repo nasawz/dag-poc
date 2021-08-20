@@ -1,31 +1,31 @@
-import React from 'react'
-import { Layout } from 'antd'
+import React from "react";
+import { Layout } from "antd";
 // import { useObservableState } from '@/common/hooks/useObservableState'
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
-import { GithubOutlined } from '@ant-design/icons'
-import { SimpleLogo } from './logo'
-import { ExperimentTitle } from './experiment-title'
+import { GithubOutlined } from "@ant-design/icons";
+import { SimpleLogo } from "./logo";
+import { ExperimentTitle } from "./experiment-title";
 
-import css from './index.module.less'
-import { useExperimentGraph } from '../../rx-models/experiment-graph'
-import { useObservableState } from '../../hooks/useObservableState'
+import css from "./index.module.less";
+import { useExperimentGraph } from "../../rx-models/experiment-graph";
+import { useObservableState } from "../../hooks/useObservableState";
 
-const { Header } = Layout
+const { Header } = Layout;
 
 interface IProps {
-  experimentId: string
+  experimentId: string;
 }
 
 export const GuideHeader: React.FC<IProps> = (props) => {
-  const expGraph = useExperimentGraph(props.experimentId)
-  const [activeExperiment] = useObservableState(expGraph.experiment$)
+  const expGraph = useExperimentGraph(props.experimentId);
+  const [activeExperiment] = useObservableState(expGraph.experiment$);
 
   const openGithub = () => {
     // window.open(
     //   'https://github.com/antvis/X6/tree/master/examples/x6-app-dag',
     //   '_blank',
     // )
-  }
+  };
 
   return (
     <>
@@ -41,5 +41,5 @@ export const GuideHeader: React.FC<IProps> = (props) => {
         </div>
       </Header>
     </>
-  )
-}
+  );
+};

@@ -1,36 +1,36 @@
-import React from 'react'
-import { Form, Input, Radio } from 'antd'
-import { useObservableState } from '../../../hooks/useObservableState'
-import { useExperimentGraph } from '../../../rx-models/experiment-graph'
+import React from "react";
+import { Form, Input, Radio } from "antd";
+import { useObservableState } from "../../../hooks/useObservableState";
+import { useExperimentGraph } from "../../../rx-models/experiment-graph";
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 
 export interface Props {
-  name: string
-  experimentId: string
+  name: string;
+  experimentId: string;
 }
 
 export const ExperimentForm: React.FC<Props> = ({ experimentId, name }) => {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
-  const expGraph = useExperimentGraph(experimentId)
-  const [activeExperiment] = useObservableState(expGraph.experiment$)
+  const expGraph = useExperimentGraph(experimentId);
+  const [activeExperiment] = useObservableState(expGraph.experiment$);
 
   const onValuesChange = ({ experimentName }: { experimentName: string }) => {
-    expGraph.experiment$.next({ ...activeExperiment, name: experimentName })
-  }
+    expGraph.experiment$.next({ ...activeExperiment, name: experimentName });
+  };
 
   React.useEffect(() => {
     form.setFieldsValue({
-      experimentName: activeExperiment ? activeExperiment.name : '',
-    })
-  }, [activeExperiment])
+      experimentName: activeExperiment ? activeExperiment.name : "",
+    });
+  }, [activeExperiment]);
 
   return (
     <Form
       form={form}
       layout="vertical"
       initialValues={{
-        experimentName: activeExperiment ? activeExperiment.name : '',
+        experimentName: activeExperiment ? activeExperiment.name : "",
       }}
       onValuesChange={onValuesChange}
       requiredMark={false}
@@ -55,5 +55,5 @@ export const ExperimentForm: React.FC<Props> = ({ experimentId, name }) => {
         </Radio.Group>
       </Form.Item>
     </Form>
-  )
-}
+  );
+};

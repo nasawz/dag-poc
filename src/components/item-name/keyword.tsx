@@ -1,18 +1,18 @@
-import React from 'react'
-import classnames from 'classnames'
-import styles from './keyword.module.less'
+import React from "react";
+import classnames from "classnames";
+import styles from "./keyword.module.less";
 
 interface Props {
-  raw: string
-  keyword: string
-  className?: string
+  raw: string;
+  keyword: string;
+  className?: string;
 }
 
 export const Keyword: React.FC<Props> = (props) => {
-  const { raw, keyword, className } = props
+  const { raw, keyword, className } = props;
   if (keyword) {
-    const regex = new RegExp(keyword, 'ig')
-    const arr = raw.split(regex)
+    const regex = new RegExp(keyword, "ig");
+    const arr = raw.split(regex);
     return (
       <span
         className={classnames({
@@ -28,10 +28,10 @@ export const Keyword: React.FC<Props> = (props) => {
             </span>
           ) : (
             section
-          ),
+          )
         )}
       </span>
-    )
+    );
   }
-  return null
-}
+  return null;
+};

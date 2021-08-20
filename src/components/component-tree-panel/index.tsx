@@ -1,28 +1,28 @@
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import { ComponentSourceTree } from './component-source-tree'
-import styles from './index.module.less'
+import React, { useState } from "react";
+import classNames from "classnames";
+import { ComponentSourceTree } from "./component-source-tree";
+import styles from "./index.module.less";
 
 interface Props {
-  className?: string
-  experimentId: string
+  className?: string;
+  experimentId: string;
 }
 
-type TabOption = 'component' | 'model'
+type TabOption = "component" | "model";
 
 export const ComponentTreePanel: React.FC<Props> = (props) => {
-  const { className } = props
-  const [activeTab, setActiveTab] = useState<TabOption>('component')
+  const { className } = props;
+  const [activeTab, setActiveTab] = useState<TabOption>("component");
 
   return (
     <div className={classNames(className, styles.nodeSourceTreeContainer)}>
       <div className={styles.tabWrapper}>
         <div
           className={classNames(styles.tab, {
-            [styles.active]: activeTab === 'component',
+            [styles.active]: activeTab === "component",
           })}
           onClick={() => {
-            setActiveTab('component')
+            setActiveTab("component");
           }}
         >
           组件库
@@ -30,9 +30,9 @@ export const ComponentTreePanel: React.FC<Props> = (props) => {
       </div>
       <div className={styles.tabContentWrapper}>
         <ComponentSourceTree
-          className={classNames({ [styles.hide]: activeTab !== 'component' })}
+          className={classNames({ [styles.hide]: activeTab !== "component" })}
         />
       </div>
     </div>
-  )
-}
+  );
+};
