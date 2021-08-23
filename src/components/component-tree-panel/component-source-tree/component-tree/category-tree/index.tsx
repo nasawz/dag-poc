@@ -39,7 +39,7 @@ export const CategoryTree = () => {
         return (
           <TreeNode
             isLeaf={true}
-            key={key}
+            key={`leaf-${key}`}
             icon={<span />}
             title={title}
             className={styles.treeNode}
@@ -59,7 +59,7 @@ export const CategoryTree = () => {
         selectable={false}
         autoExpandParent={true}
         className={styles.tree}
-        defaultExpandedKeys={["recentlyUsed"]}
+        defaultExpandedKeys={[]}
       >
         {renderTree(treeList)}
       </DirectoryTree>

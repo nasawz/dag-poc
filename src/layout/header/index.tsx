@@ -32,7 +32,7 @@ export const GuideHeader: React.FC<IProps> = (props) => {
       <Header className={css.header}>
         <div className={css.headerLeft}>
           <SimpleLogo />
-          <ExperimentTitle experimentName={activeExperiment.name} />
+          {activeExperiment&&<ExperimentTitle experimentName={activeExperiment.name} />}
         </div>
         <div className={css.headerRight}>
           <div className={css.doc}>

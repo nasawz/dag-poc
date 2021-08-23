@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { useCallback, useState } from "react";
+// import { useTreeNodes } from "../hooks/useTreeNodes";
 import { algoData, searchByKeyword } from "../mock/algo";
+import * as api from '../api'
 
 export namespace Res {
   export interface Data {
@@ -76,10 +78,14 @@ export const useGuideAlgoComponentModel = () => {
   // 加载组件
   const loadComponentNodes = useCallback(() => {
     setLoading(true);
+    // getTreeNodes();
     const load = async () => {
       try {
-        if (algoData) {
-          setComponentTreeNodes(algoData);
+        let res = await api.getTreeNodes();
+        // console.log(res.data);
+        // console.log(algoData);
+        if (res.data) {
+          setComponentTreeNodes(res.data);
         }
       } finally {
         setLoading(false);

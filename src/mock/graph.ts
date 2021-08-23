@@ -57,12 +57,12 @@ export const addNode = ({ name, x, y,...others }: NodeParams) => {
     id,
     name,
     inPorts: [
-      // {
-      //   tableName: "germany_credit_data",
-      //   sequence: 1,
-      //   description: "输入1",
-      //   id: id + "_in_1",
-      // },
+      {
+        tableName: "germany_credit_data",
+        sequence: 1,
+        description: "输入1",
+        id: id + "_in_1",
+      },
       // {
       //   tableName: "germany_credit_data",
       //   sequence: 2,

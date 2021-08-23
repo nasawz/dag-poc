@@ -32,6 +32,10 @@ export const NodeElement: React.FC<Props> = (props) => {
   const { name, id, selected } = data;
   const nodeStatus: any = instanceStatus[id] || {};
 
+
+  console.log('==============', name, id, selected);
+  
+
   return (
     <ConfigProvider prefixCls={ANT_PREFIX}>
       <NodePopover status={nodeStatus}>

@@ -69,6 +69,16 @@ module.exports = (webpackConfigEnv, argv) => {
       //   ],
       // }),
     ],
+    devServer: {
+      historyApiFallback: true,
+      // quiet:false,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:1337',
+          pathRewrite: { '^/api': '' },
+        },
+      },
+    },
   });
   if (WEBPACK_BUNDLE && WEBPACK_BUILD) {
     config.plugins.push(new HtmlWebpackPlugin());

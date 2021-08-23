@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import classnames from "classnames";
 import { BehaviorSubject, fromEventPattern, timer, Subscription } from "rxjs";
 import { filter, take } from "rxjs/operators";
-import { round } from "lodash-es";
 import produce from "immer";
 import { ConfigProvider, message, Tooltip } from "antd";
 import { NExecutionStatus, NExperiment, NExperimentGraph } from "./typing";
@@ -30,6 +29,8 @@ import { NodeGroup } from "../components/dag-canvas/elements/node-group";
 import { queryGraph, addNode, copyNode } from "../mock/graph";
 import { queryGraphStatus, runGraph, stopGraphRun } from "../mock/status";
 import { ConnectionRemovedArgs, GraphCore } from "./graph-core";
+import * as api from '../api'
+import { round, keyBy, values, cloneDeep, merge, map } from "lodash-es";
 
 export function parseStatus(data: NExecutionStatus.ExecutionStatus) {
   const { execInfo, instStatus } = data;
@@ -267,14 +268,8 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   // 获取实验
   async loadExperiment(experimentId: string) {
     try {
-      const res = {
-        projectName: "sre_mpi_algo_dev",
-        gmtCreate: "2020-08-18 02:21:41",
-        description: "用户流失数据建模demo",
-        name: "DAG 有向无环",
-        id: 353355,
-      };
-      this.experiment$.next(res);
+      let res = await api.getExperimentById(experimentId);
+      this.experiment$.next(res.data);
       return { success: true };
     } catch (e) {
       console.error("加载实验错误", e);
@@ -284,23 +279,52 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   // 获取图
   async loadExperimentGraph(experimentId: string) {
-    const graphRes = await queryGraph(experimentId);
-    this.experimentGraph$.next(graphRes.data as any);
+    // const graphRes = await queryGraph(experimentId);
+
+    let res = await api.getExperimentById(experimentId);
+    this.experimentGraph$.next(res.data.graph as any);
+
   }
+
+  async updateExperimentGraph2Db(graph) {
+    const { experimentId } = this;
+    let { nodes, links } = graph
+    const parseNodes = map(nodes, (node) => {
+      const { selected, ...others } = node;
+      return { ...others };
+    });
+    api.updateExperimentById(experimentId, {
+      graph: {
+        nodes: parseNodes, links
+      }
+    });
+  }
+
   // 更新图元
   async updateExperimentGraph(
     nodes: NExperimentGraph.Node[] = [],
     links: NExperimentGraph.Link[] = []
   ) {
     const oldGraph = this.experimentGraph$.getValue();
+
     const newGraph = produce(oldGraph, (nextGraph: any) => {
       if (nodes.length) {
-        nextGraph.nodes.push(...nodes);
+        //修改push操作为合并操作
+        let newNodes = values(
+          merge(
+            keyBy(cloneDeep(nextGraph.nodes), "id"),
+            keyBy(cloneDeep(nodes), "id")
+          )
+        );
+        nextGraph.nodes = newNodes;
+        // nextGraph.nodes.push(...nodes);
       }
       if (links.length) {
         nextGraph.links.push(...links);
       }
     });
+
+    this.updateExperimentGraph2Db(newGraph);
     this.experimentGraph$.next(newGraph as any);
   }
   // 删除图元
@@ -331,6 +355,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         });
       }
     });
+    this.updateExperimentGraph2Db(newGraph);
     this.experimentGraph$.next(newGraph as any);
   }
 
@@ -570,6 +595,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
           }
         });
       });
+      this.updateExperimentGraph2Db(newGraph);
       this.experimentGraph$.next(newGraph);
     }
   }
@@ -743,7 +769,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       const cell = this.getCellById(nodeInstanceId) as BaseNode;
       const data: object = cell!.getData();
       console.log(data);
-      
+
       const newData = { ...data, name: newName };
       cell!.setData(newData);
       // cell.addPort({ id:  `${Date.now()}`, group: "in"});
