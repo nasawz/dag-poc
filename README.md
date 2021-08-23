@@ -14,7 +14,7 @@
   
 ## Demo
 
-https://dag-1g7y7f5w8860e499-1256312109.tcloudbaseapp.com/
+https://dag-1g7y7f5w8860e499-1256312109.ap-shanghai.app.tcloudbase.com/
 
   
 ## License
