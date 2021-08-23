@@ -740,10 +740,14 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   renameNode = async (nodeInstanceId: string, newName: string) => {
     const renameRes = await { success: true };
     if (renameRes.success) {
-      const cell = this.getCellById(nodeInstanceId);
+      const cell = this.getCellById(nodeInstanceId) as BaseNode;
       const data: object = cell!.getData();
+      console.log(data);
+      
       const newData = { ...data, name: newName };
       cell!.setData(newData);
+      // cell.addPort({ id:  `${Date.now()}`, group: "in"});
+
       this.updateExperimentGraph([newData as any]);
     }
     return renameRes;

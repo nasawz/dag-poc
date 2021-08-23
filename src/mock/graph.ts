@@ -51,8 +51,7 @@ export const copyNode = ({ name, x, y }: NodeParams) => {
   };
 };
 export const addNode = ({ name, x, y,...others }: NodeParams) => {
-  console.log(others);
-  
+
   const id = `${Date.now()}`;
   return {
     id,
