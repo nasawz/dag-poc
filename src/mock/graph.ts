@@ -4,7 +4,7 @@ interface NodeParams {
   name: string;
   x: number;
   y: number;
-  [others: string]: any 
+  [others: string]: any
 }
 
 export const copyNode = ({ name, x, y }: NodeParams) => {
@@ -50,49 +50,47 @@ export const copyNode = ({ name, x, y }: NodeParams) => {
     groupId: 0,
   };
 };
-export const addNode = ({ name, x, y,...others }: NodeParams) => {
-
+export const addNode = ({ name, x, y, ...others }: NodeParams) => {
   const id = `${Date.now()}`;
-  return {
-    id,
-    name,
-    inPorts: [
-      {
-        tableName: "germany_credit_data",
-        sequence: 1,
-        description: "输入1",
-        id: id + "_in_1",
-      },
-      // {
-      //   tableName: "germany_credit_data",
-      //   sequence: 2,
-      //   description: "输入2",
-      //   id: id + "_in_2",
-      // },
-    ],
-    outPorts: [
-      {
-        // tableName: "germany_credit_data",
-        sequence: 1,
-        description: "输出表1",
-        id: id + "_out_1",
-      },
-      // {
-      //   tableName: "germany_credit_data",
-      //   sequence: 2,
-      //   description: "输出表2",
-      //   id: id + "_out_2",
-      // },
-    ],
+  const { codeName, category } = others;
+
+  let nodeStruct = {
+    id, name,
     positionX: x,
     positionY: y,
-    codeName: "source_11111",
-    catId: 1,
-    nodeDefId: 111111,
-    category: "source",
+    codeName,
+    category,
     status: 3,
     groupId: 0,
-  };
+    inPorts: [],
+    outPorts: [],
+    data: {}
+  }
+  if (codeName === 'table_field') {
+    let outPorts = [{
+      sequence: 1,
+      description: "输出",
+      id: id + "_out_1",
+    }]
+    nodeStruct['outPorts'] = outPorts
+    nodeStruct['data'] = { "table_field": null }
+  }
+  if (codeName === 'source_sum') {
+    let inPorts = [
+      {
+        sequence: 1,
+        description: "输入",
+        id: id + "_in_1",
+      },
+      {
+        sequence: 2,
+        description: "输入",
+        id: id + "_in_2",
+      }
+    ]
+    nodeStruct['inPorts'] = inPorts
+  }
+  return nodeStruct;
 };
 
 export const queryGraph = (id: string) => {
@@ -118,7 +116,7 @@ export const addNodeGroup = async (groupName: string) => {
 
 
 const initData = {
-  nodes:[],links:[]
+  nodes: [], links: []
 }
 const initData1 = {
   nodes: [

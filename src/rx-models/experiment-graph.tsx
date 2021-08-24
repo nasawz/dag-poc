@@ -157,6 +157,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
           sourceMagnet,
           targetMagnet,
         }) {
+
           // 不允许连接到自己
           if (sourceView === targetView) {
             return false;
@@ -715,6 +716,8 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       const { nodeMeta, clientX, clientY } = param;
       const pos = graph.clientToLocal(clientX, clientY);
       const nodeRes = await addNode({ ...nodeMeta, ...pos });
+      console.log(nodeRes);
+
       this.updateExperimentGraph([nodeRes]);
       const newNode = formatNodeInfoToNodeMeta(nodeRes as any);
       this.addNode(newNode);
@@ -777,6 +780,22 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       this.updateExperimentGraph([newData as any]);
     }
     return renameRes;
+  };
+
+  // 更新节点业务数据
+  updateNodeData = async (nodeInstanceId: string, busData: object) => {
+    const updateRes = await { success: true };
+    if (updateRes.success) {
+      const cell = this.getCellById(nodeInstanceId) as BaseNode;
+      const nodeData = cell!.getData() as any;
+      const { data } = nodeData
+      const newData = merge({}, nodeData, { data: merge({}, data, busData) });
+      cell!.setData(newData);
+      // cell.addPort({ id:  `${Date.now()}`, group: "in"});
+
+      this.updateExperimentGraph([newData as any]);
+    }
+    return updateRes;
   };
 
   // 缩放特定比例

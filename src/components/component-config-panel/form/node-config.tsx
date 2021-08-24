@@ -1,5 +1,6 @@
 import React from "react";
-import { Form, Input } from "antd";
+import { Divider, Form, Input } from "antd";
+import { keys, map } from 'lodash-es'
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import "antd/lib/style/index.css";
 import { useObservableState } from "../../../hooks/useObservableState";
@@ -20,33 +21,57 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   const expGraph = useExperimentGraph(experimentId);
   const [node] = useObservableState(() => expGraph.activeNodeInstance$);
+  console.log('[activeNodeInstance]', node);
 
-  const onValuesChange = async ({ name }: { name: string }) => {
-    if (node.name !== name) {
+  const onValuesChange = async ({ name, ...others }: { name: string }) => {
+    if (name && node.name !== name) {
       await expGraph.renameNode(nodeId, name);
     }
+    map(keys(others), async (key) => {
+      if (node.data[key] !== others[key]) {
+        await expGraph.updateNodeData(nodeId, { [key]: others[key] });
+      }
+    })
   };
+  let getInitialValues = () => {
+    let v = {} as any;
+    if (node) {
+      const { name, data } = node
+      v.name = name;
 
+      map(keys(data), (key) => {
+        v[key] = data[key];
+      })
+
+    }
+    return v;
+  }
+  // codeName: "table_field"
+  if (!node) {
+    return <div />
+  }
   return (
     <Form
       form={form}
       layout="vertical"
-      initialValues={{ name: node ? node.name : "" }}
+      initialValues={getInitialValues()}
       onValuesChange={onValuesChange}
       requiredMark={false}
     >
       <Form.Item label="节点名称" name="name">
         <Input placeholder="input placeholder" />
       </Form.Item>
-      <Form.Item label={name}>
+      <Divider />
+      <Form.Item label="表.字段" name="table_field">
         <Input placeholder="input placeholder" />
       </Form.Item>
-      <Form.Item label="Field C">
+      {/* <Form.Item label={name}>
         <Input placeholder="input placeholder" />
       </Form.Item>
+      
       <Form.Item label="Field D">
         <Input placeholder="input placeholder" />
-      </Form.Item>
+      </Form.Item> */}
     </Form>
   );
 };

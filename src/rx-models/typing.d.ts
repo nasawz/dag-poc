@@ -34,7 +34,7 @@ export namespace NExperimentGraph {
   export interface Node {
     outPorts: OutPort[];
     inPorts: InPort[];
-    catId: number;
+    // catId: number;
     positionX: number;
     positionY: number;
     codeName: string;
