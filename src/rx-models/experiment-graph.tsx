@@ -31,6 +31,7 @@ import { queryGraphStatus, runGraph, stopGraphRun } from "../mock/status";
 import { ConnectionRemovedArgs, GraphCore } from "./graph-core";
 import * as api from '../api'
 import { round, keyBy, values, cloneDeep, merge, map } from "lodash-es";
+import { emitter } from "../constants/emitter";
 
 export function parseStatus(data: NExecutionStatus.ExecutionStatus) {
   const { execInfo, instStatus } = data;
@@ -50,7 +51,26 @@ interface NodeDataMap {
   [nodeInstanceId: string]: NExperimentGraph.Node;
 }
 
+// 点击右上角保存按钮后执行
+let updateObj: any = {};
+emitter.addListener('onSave', function () {
+  const { experimentId, parseNodes, links } = updateObj
+  emitter.emit('saveLoading'); // 保存按钮loading
+  api.updateExperimentById(experimentId, {
+    graph: {
+      nodes: parseNodes, links
+    }
+  }).then((res) => {
+    if (res) {
+      message.success('保存成功');
+      emitter.emit('onChangeGraph', true); // 右上角保存按钮禁止点击
+    } else {
+      message.error('保存失败');
+    }
+  })
+});
 class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
+
   // 重新声明节点元信息的类型
   nodeMetas?: NodeMeta[];
 
@@ -242,7 +262,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     this.experimentId = expId;
     this.initialize();
   }
-
   // 获取实验和图及执行状态信息
   async initialize() {
     // eslint-disable-next-line: no-this-assignment
@@ -285,7 +304,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     this.experimentGraph$.next(res.data.graph as any);
 
   }
-
   async updateExperimentGraph2Db(graph) {
     const { experimentId } = this;
     let { nodes, links } = graph
@@ -293,12 +311,20 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       const { selected, ...others } = node;
       return { ...others };
     });
-    api.updateExperimentById(experimentId, {
-      graph: {
-        nodes: parseNodes, links
-      }
-    });
+    updateObj = {
+      experimentId, parseNodes, links
+    }
+    emitter.emit('onChangeGraph', false); // 右上角保存按钮可点击
+    // emitter.addListener('onSave', function () {
+    //   console.log('12343111111')
+    //   // api.updateExperimentById(experimentId, {
+    //   //   graph: {
+    //   //     nodes: parseNodes, links
+    //   //   }
+    //   // });
+    // });
   }
+
 
   // 更新图元
   async updateExperimentGraph(
