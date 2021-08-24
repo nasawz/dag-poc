@@ -9,6 +9,8 @@ import { ComponentTreePanel } from "../components/component-tree-panel";
 import { ComponentConfigPanel } from "../components/component-config-panel";
 import { DAGCanvas } from "../components/dag-canvas";
 
+import { socket } from '../web-sockets'
+
 export interface IAppProps {
   experimentId?;
 }
@@ -16,7 +18,10 @@ export interface IAppProps {
 export default function App(props: IAppProps) {
   const { experimentId = "1" } = props;
   const { Content } = Layout;
-
+  socket.on('welcome', (data) => {
+    console.log("Welcome event inside JoinRoom", data);
+    // props.onJoinSuccess(data);
+  });
   return (
     <Layout className={styles.layout}>
       <GuideHeader experimentId={experimentId} />

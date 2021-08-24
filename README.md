@@ -16,7 +16,13 @@
 
 https://dag-1g7y7f5w8860e499-1256312109.ap-shanghai.app.tcloudbase.com/
 
-  
+
+## 参考资料
+
+webpack dev-server 代理 websocket
+https://www.codenong.com/cs106330388/
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
