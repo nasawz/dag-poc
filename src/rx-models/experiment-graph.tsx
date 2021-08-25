@@ -29,7 +29,7 @@ import { NodeGroup } from "../components/dag-canvas/elements/node-group";
 import { queryGraph, addNode, copyNode } from "../mock/graph";
 import { queryGraphStatus, runGraph, stopGraphRun } from "../mock/status";
 import { ConnectionRemovedArgs, GraphCore } from "./graph-core";
-import * as api from '../api'
+import * as api from "../api";
 import { round, keyBy, values, cloneDeep, merge, map } from "lodash-es";
 import { emitter } from "../constants/emitter";
 
@@ -53,24 +53,26 @@ interface NodeDataMap {
 
 // 点击右上角保存按钮后执行
 let updateObj: any = {};
-emitter.addListener('onSave', function () {
-  const { experimentId, parseNodes, links } = updateObj
-  emitter.emit('saveLoading'); // 保存按钮loading
-  api.updateExperimentById(experimentId, {
-    graph: {
-      nodes: parseNodes, links
-    }
-  }).then((res) => {
-    if (res) {
-      message.success('保存成功');
-      emitter.emit('onChangeGraph', true); // 右上角保存按钮禁止点击
-    } else {
-      message.error('保存失败');
-    }
-  })
+emitter.addListener("onSave", function () {
+  const { experimentId, parseNodes, links } = updateObj;
+  emitter.emit("saveLoading"); // 保存按钮loading
+  api
+    .updateExperimentById(experimentId, {
+      graph: {
+        nodes: parseNodes,
+        links,
+      },
+    })
+    .then((res) => {
+      if (res) {
+        message.success("保存成功");
+        emitter.emit("onChangeGraph", true); // 右上角保存按钮禁止点击
+      } else {
+        message.error("保存失败");
+      }
+    });
 });
 class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
-
   // 重新声明节点元信息的类型
   nodeMetas?: NodeMeta[];
 
@@ -177,7 +179,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
           sourceMagnet,
           targetMagnet,
         }) {
-
           // 不允许连接到自己
           if (sourceView === targetView) {
             return false;
@@ -303,19 +304,20 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
     let res = await api.getExperimentById(experimentId);
     this.experimentGraph$.next(res.data.graph as any);
-
   }
   async updateExperimentGraph2Db(graph) {
     const { experimentId } = this;
-    let { nodes, links } = graph
+    let { nodes, links } = graph;
     const parseNodes = map(nodes, (node) => {
       const { selected, ...others } = node;
       return { ...others };
     });
     updateObj = {
-      experimentId, parseNodes, links
-    }
-    emitter.emit('onChangeGraph', false); // 右上角保存按钮可点击
+      experimentId,
+      parseNodes,
+      links,
+    };
+    emitter.emit("onChangeGraph", false); // 右上角保存按钮可点击
     // emitter.addListener('onSave', function () {
     //   console.log('12343111111')
     //   // api.updateExperimentById(experimentId, {
@@ -325,7 +327,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     //   // });
     // });
   }
-
 
   // 更新图元
   async updateExperimentGraph(
@@ -705,6 +706,35 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     }
   };
 
+  //部署
+  deployGraph = async () => {
+    try {
+      const { id, name } = this.experiment$.getValue();
+      let { nodes, links } = this.experimentGraph$.getValue();
+      if (!id || !name || !nodes || !links) {
+        message.error("参数错误");
+        return;
+      }
+      let param = {
+        id,
+        name,
+        graph: {
+          nodes,
+          links,
+        },
+      };
+      let res = await api.deployExperiment(param);
+      if (res && res.status === 200) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (e) {
+      console.error(`部署失败`, e);
+      return { success: false };
+    }
+  };
+
   // 停止实验的执行
   stopRunGraph = async () => {
     try {
@@ -814,7 +844,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     if (updateRes.success) {
       const cell = this.getCellById(nodeInstanceId) as BaseNode;
       const nodeData = cell!.getData() as any;
-      const { data } = nodeData
+      const { data } = nodeData;
       const newData = merge({}, nodeData, { data: merge({}, data, busData) });
       cell!.setData(newData);
       // cell.addPort({ id:  `${Date.now()}`, group: "in"});

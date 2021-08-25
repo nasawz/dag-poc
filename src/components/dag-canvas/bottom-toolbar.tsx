@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Popover } from "antd";
+import { message, Popover } from "antd";
 import {
   CloudUploadOutlined,
   LogoutOutlined,
@@ -47,6 +47,17 @@ export const BottomToolbar: React.FC<Props> = (props) => {
     });
   }, [expGraph]);
 
+  // 部署
+  const deployExperiment = useCallback(() => {
+    expGraph.deployGraph().then((res: any) => {
+      if (!res.success) {
+        message.error("部署失败");
+      } else {
+        message.success("已部署");
+      }
+    });
+  }, [expGraph]);
+
   const runningConfigs = [
     {
       content: "运行",
@@ -71,7 +82,7 @@ export const BottomToolbar: React.FC<Props> = (props) => {
     <div className={styles.bottomToolbar}>
       <ul className={styles.itemList}>
         {/* 部署 */}
-        <li className={styles.item}>
+        <li className={styles.item} onClick={deployExperiment}>
           <CloudUploadOutlined />
           <span>部署</span>
         </li>
