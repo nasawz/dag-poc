@@ -393,7 +393,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     // 每三秒查询一次执行状态
     this.executionStatusQuerySub = timer(0, 5000).subscribe(
       async (resPromise) => {
-        const execStatusRes = await queryGraphStatus();
+        const execStatusRes = await queryGraphStatus() as any;
         this.executionStatus$.next(execStatusRes.data as any);
         this.updateEdgeStatus();
         // 执行完成时停止查询状态
@@ -690,33 +690,23 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   };
 
   // // 运行画布或节点
-  // runGraph = async () => {
-  //   try {
-  //     // eslint-disable-next-line: no-this-assignment
-  //     const { experimentId, nodeMetas = [] } = this;
-  //     console.log("=========nodeMetas", nodeMetas);
-  //     await runGraph(nodeMetas);
-  //     this.running$.next(true);
-  //     this.clearContextMenuInfo();
-  //     this.loadExecutionStatus(experimentId); // 发起执行状态查询
-  //     console.log("sucess===>>>>>>>>>>>>>");
-  //     return { success: true };
-  //   } catch (e) {
-  //     console.error(`执行失败`, e);
-  //     return { success: false };
-  //   }
-  // };
-
-  // 运行画布或节点
   runGraph = async () => {
     try {
-      const { experimentId } = this;
+      // eslint-disable-next-line: no-this-assignment
+      const { experimentId, nodeMetas = [] } = this;
+
       let param = {
         id: experimentId,
       };
+      console.log("=========nodeMetas", nodeMetas);
+      await runGraph(experimentId, nodeMetas);
+      this.running$.next(true);
+      this.clearContextMenuInfo();
+      this.loadExecutionStatus(experimentId); // 发起执行状态查询
+      console.log("sucess===>>>>>>>>>>>>>");
       let res = await api.runExperiment(param);
       if (res && res.status === 200) {
-        this.clearContextMenuInfo();
+
         return { success: true };
       } else {
         return { success: false };
@@ -727,9 +717,32 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     }
   };
 
+  // // 运行画布或节点
+  // runGraph1 = async () => {
+  //   try {
+  //     const { experimentId } = this;
+  //     let param = {
+  //       id: experimentId,
+  //     };
+  //     let res = await api.runExperiment(param);
+  //     if (res && res.status === 200) {
+  //       this.clearContextMenuInfo();
+  //       return { success: true };
+  //     } else {
+  //       return { success: false };
+  //     }
+  //   } catch (e) {
+  //     console.error(`执行失败`, e);
+  //     return { success: false };
+  //   }
+  // };
+
   //部署
   deployGraph = async () => {
     try {
+      // eslint-disable-next-line: no-this-assignment
+      const { experimentId } = this;
+      this.loadExecutionStatus(experimentId); 
       const { id, name } = this.experiment$.getValue();
       let { nodes, links } = this.experimentGraph$.getValue();
       if (!id || !name || !nodes || !links) {

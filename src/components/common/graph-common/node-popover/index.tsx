@@ -11,10 +11,11 @@ interface TooltipProps {
 
 interface StatusObj {
   name: string;
-  defName: string;
+  // defName: string;
   jobStatus: string;
-  startTime: string;
-  endTime: string;
+  // startTime: string;
+  // endTime: string;
+  value: string;
 }
 
 export const NodePopover = ({ children, status }: TooltipProps) => {
@@ -37,10 +38,11 @@ export const NodePopover = ({ children, status }: TooltipProps) => {
 
 const nodeAtts: StatusObj = {
   name: "节点名称",
-  defName: "算法名称",
+  // defName: "算法名称",
   jobStatus: "运行状态",
-  startTime: "开始时间",
-  endTime: "结束时间",
+  // startTime: "开始时间",
+  // endTime: "结束时间",
+  value: '执行结果'
 };
 
 const PopoverContent = ({ status }: { status: StatusObj }) => (
