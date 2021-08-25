@@ -22,7 +22,7 @@ export const GuideHeader: React.FC<IProps> = (props) => {
   const [activeExperiment] = useObservableState(expGraph.experiment$);
 
   const onSave = () => {
-    emitter.emit('onSave');
+    expGraph.saveExperimentGraph();
   }
   emitter.addListener('onChangeGraph', function (staus) {
     setDisabled(staus);
