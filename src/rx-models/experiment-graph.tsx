@@ -287,7 +287,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
 
   async saveExperimentGraph() {
     const { experimentId } = this;
-    const { nodes, links, } = this.experimentGraph$.getValue();
+    const { nodes, links } = this.experimentGraph$.getValue();
     emitter.emit("saveLoading"); // 保存按钮loading
     api
       .updateExperimentById(experimentId, {
@@ -374,7 +374,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     // 每三秒查询一次执行状态
     this.executionStatusQuerySub = timer(0, 5000).subscribe(
       async (resPromise) => {
-        const execStatusRes = await queryGraphStatus() as any;
+        const execStatusRes = (await queryGraphStatus()) as any;
         this.executionStatus$.next(execStatusRes.data as any);
         this.updateEdgeStatus();
         // 执行完成时停止查询状态
@@ -687,7 +687,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       console.log("sucess===>>>>>>>>>>>>>");
       let res = await api.runExperiment(param);
       if (res && res.status === 200) {
-
         return { success: true };
       } else {
         return { success: false };
@@ -723,7 +722,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     try {
       // eslint-disable-next-line: no-this-assignment
       const { experimentId } = this;
-      this.loadExecutionStatus(experimentId); 
+      this.loadExecutionStatus(experimentId);
       const { id, name } = this.experiment$.getValue();
       let { nodes, links } = this.experimentGraph$.getValue();
       if (!id || !name || !nodes || !links) {
@@ -748,6 +747,29 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       console.error(`部署失败`, e);
       return { success: false };
     }
+  };
+
+  /**
+   * 根据节点id找到他的上级node
+   * @param nodeId
+   */
+  findSourceByNode = (nodeId) => {
+    const cell = this.getCellById(nodeId);
+    if (!cell.isNode()) {
+      return null;
+    }
+    let { nodes, links } = this.experimentGraph$.getValue();
+    // let newNodes = values(keyBy(cloneDeep(nodes), "id"));
+    let sources = [];
+    links.forEach((item) => {
+      if (item.target === nodeId) {
+        sources.push(item.source);
+      }
+    });
+    let res = nodes.filter((item) => {
+      return sources.includes(item.id.toString());
+    });
+    return res;
   };
 
   // 停止实验的执行
