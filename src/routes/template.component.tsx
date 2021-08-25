@@ -11,7 +11,6 @@ import { DAGCanvas } from "../components/dag-canvas";
 import { socket } from '../web-sockets'
 import { useParams } from "react-router-dom";
 export interface ITemplateComponentProps {
-    experimentId?;
 }
 
 export default function TemplateComponent(props: ITemplateComponentProps) {
