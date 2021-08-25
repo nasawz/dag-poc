@@ -17,5 +17,5 @@ export function deployExperiment(data) {
 }
 
 export function runExperiment(data) {
-  return axios.post(`/api/experiments​/run`, data);
+  return axios.post(`/api/experiments/run`, data);
 }

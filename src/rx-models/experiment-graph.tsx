@@ -689,17 +689,38 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     }
   };
 
+  // // 运行画布或节点
+  // runGraph = async () => {
+  //   try {
+  //     // eslint-disable-next-line: no-this-assignment
+  //     const { experimentId, nodeMetas = [] } = this;
+  //     console.log("=========nodeMetas", nodeMetas);
+  //     await runGraph(nodeMetas);
+  //     this.running$.next(true);
+  //     this.clearContextMenuInfo();
+  //     this.loadExecutionStatus(experimentId); // 发起执行状态查询
+  //     console.log("sucess===>>>>>>>>>>>>>");
+  //     return { success: true };
+  //   } catch (e) {
+  //     console.error(`执行失败`, e);
+  //     return { success: false };
+  //   }
+  // };
+
   // 运行画布或节点
   runGraph = async () => {
     try {
-      // eslint-disable-next-line: no-this-assignment
-      const { experimentId, nodeMetas = [] } = this;
-
-      await runGraph(nodeMetas);
-      this.running$.next(true);
-      this.clearContextMenuInfo();
-      this.loadExecutionStatus(experimentId); // 发起执行状态查询
-      return { success: true };
+      const { experimentId } = this;
+      let param = {
+        id: experimentId,
+      };
+      let res = await api.runExperiment(param);
+      if (res && res.status === 200) {
+        this.clearContextMenuInfo();
+        return { success: true };
+      } else {
+        return { success: false };
+      }
     } catch (e) {
       console.error(`执行失败`, e);
       return { success: false };

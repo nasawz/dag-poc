@@ -32,7 +32,10 @@ export const BottomToolbar: React.FC<Props> = (props) => {
     setPreparingRun(true);
     expGraph.runGraph().then((res: any) => {
       if (!res.success) {
+        message.error("运行失败");
         setPreparingRun(false);
+      } else {
+        message.success("运行成功");
       }
     });
   }, [expGraph]);
