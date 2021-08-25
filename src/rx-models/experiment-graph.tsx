@@ -51,27 +51,6 @@ interface NodeDataMap {
   [nodeInstanceId: string]: NExperimentGraph.Node;
 }
 
-// 点击右上角保存按钮后执行
-let updateObj: any = {};
-emitter.addListener("onSave", function () {
-  const { experimentId, parseNodes, links } = updateObj;
-  emitter.emit("saveLoading"); // 保存按钮loading
-  api
-    .updateExperimentById(experimentId, {
-      graph: {
-        nodes: parseNodes,
-        links,
-      },
-    })
-    .then((res) => {
-      if (res) {
-        message.success("保存成功");
-        emitter.emit("onChangeGraph", true); // 右上角保存按钮禁止点击
-      } else {
-        message.error("保存失败");
-      }
-    });
-});
 class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   // 重新声明节点元信息的类型
   nodeMetas?: NodeMeta[];
@@ -305,27 +284,29 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     let res = await api.getExperimentById(experimentId);
     this.experimentGraph$.next(res.data.graph as any);
   }
-  async updateExperimentGraph2Db(graph) {
+
+  async saveExperimentGraph() {
     const { experimentId } = this;
-    let { nodes, links } = graph;
-    const parseNodes = map(nodes, (node) => {
-      const { selected, ...others } = node;
-      return { ...others };
-    });
-    updateObj = {
-      experimentId,
-      parseNodes,
-      links,
-    };
+    const { nodes, links, } = this.experimentGraph$.getValue();
+    emitter.emit("saveLoading"); // 保存按钮loading
+    api
+      .updateExperimentById(experimentId, {
+        graph: {
+          nodes,
+          links,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          message.success("保存成功");
+          emitter.emit("onChangeGraph", true); // 右上角保存按钮禁止点击
+        } else {
+          message.error("保存失败");
+        }
+      });
+  }
+  async updateExperimentGraph2Db(graph) {
     emitter.emit("onChangeGraph", false); // 右上角保存按钮可点击
-    // emitter.addListener('onSave', function () {
-    //   console.log('12343111111')
-    //   // api.updateExperimentById(experimentId, {
-    //   //   graph: {
-    //   //     nodes: parseNodes, links
-    //   //   }
-    //   // });
-    // });
   }
 
   // 更新图元
