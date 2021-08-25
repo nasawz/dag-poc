@@ -75,7 +75,7 @@ module.exports = (webpackConfigEnv, argv) => {
       proxy: {
         '/api': {
           // target: 'http://192.168.5.177:1337',
-          target: 'http://localhost:1337',
+          target: 'http://192.168.1.238:1337',
           pathRewrite: { '^/api': '' },
         },
         '/socket':{

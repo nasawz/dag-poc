@@ -16,7 +16,7 @@ export interface IAppProps {
 }
 
 export default function App(props: IAppProps) {
-  const { experimentId = "1" } = props;
+  const { experimentId = "2" } = props;
   const { Content } = Layout;
   socket.on('welcome', (data) => {
     console.log("Welcome event inside JoinRoom", data);
