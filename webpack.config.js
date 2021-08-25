@@ -79,7 +79,7 @@ module.exports = (webpackConfigEnv, argv) => {
           pathRewrite: { '^/api': '' },
         },
         '/socket':{
-          target: 'http://localhost:1337',
+          target: 'http://192.168.1.238:1337',
           ws:true,
           changeOrigin: true,
           pathRewrite: {
