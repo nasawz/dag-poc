@@ -55,8 +55,8 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   const onValuesChange = async ({ name, ...others }: { name: string }) => {
     //计算展示的expression
-    if (others["expression"] && node.codeName === "express") {
-      replaceNodeIdToName(others["expression"]);
+    if (others["express"] && node.codeName === "express") {
+      replaceNodeIdToName(others["express"]);
     }
 
     if (name && node.name !== name) {
@@ -87,12 +87,12 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   let sourceNodes = expGraph.findSourceByNode(nodeId);
 
-  const replaceNodeIdToName = (expression) => {
-    if (!expression) {
+  const replaceNodeIdToName = (express) => {
+    if (!express) {
       setDisplayExpression("");
       return;
     }
-    let newStr = expression;
+    let newStr = express;
     sourceNodes.forEach((item) => {
       newStr = newStr.replaceAll(item.id, item.name);
     });
@@ -101,7 +101,7 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   useEffect(() => {
     if (node && node.codeName === "express") {
-      replaceNodeIdToName(node?.data?.expression);
+      replaceNodeIdToName(node?.data?.express);
     }
   }, [node]);
 
@@ -124,7 +124,7 @@ export const NodeFormDemo: React.FC<Props> = ({
       {/* 公式 */}
       {node.codeName === "express" && (
         <div>
-          <Form.Item name="expression" label="计算公式">
+          <Form.Item name="express" label="计算公式">
             <Mentions rows={3} prefix={["#"]}>
               {sourceNodes.map(({ id, name }) => (
                 <Mentions.Option value={`s_${id}`} key={id}>
