@@ -117,9 +117,9 @@ export const NodeFormDemo: React.FC<Props> = ({
         <Input placeholder="input placeholder" />
       </Form.Item>
       <Divider />
-      <Form.Item label="表.字段" name="table_field">
+      {/* <Form.Item label="表.字段" name="table_field">
         <Input placeholder="input placeholder" />
-      </Form.Item>
+      </Form.Item> */}
 
       {/* 公式 */}
       {node.codeName === "express" && (
