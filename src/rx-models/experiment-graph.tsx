@@ -30,7 +30,7 @@ import { queryGraph, addNode, copyNode } from "../mock/graph";
 import { queryGraphStatus, runGraph, stopGraphRun } from "../mock/status";
 import { ConnectionRemovedArgs, GraphCore } from "./graph-core";
 import * as api from "../api";
-import { round, keyBy, values, cloneDeep, merge, map } from "lodash-es";
+import { round, keyBy, values, cloneDeep, merge, map, groupBy, isArray, mergeWith } from "lodash-es";
 import { emitter } from "../constants/emitter";
 
 export function parseStatus(data: NExecutionStatus.ExecutionStatus) {
@@ -292,6 +292,8 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
       const { selected, ...others } = node;
       return { ...others };
     })
+    // console.log(parseNodes);
+
     emitter.emit("saveLoading"); // 保存按钮loading
     api
       .updateExperimentById(experimentId, {
@@ -323,10 +325,16 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     const newGraph = produce(oldGraph, (nextGraph: any) => {
       if (nodes.length) {
         //修改push操作为合并操作
+        let customizer = (objValue, srcValue) => {
+          if (isArray(objValue)) {
+            return srcValue;
+          }
+        }
         let newNodes = values(
-          merge(
+          mergeWith(
             keyBy(cloneDeep(nextGraph.nodes), "id"),
-            keyBy(cloneDeep(nodes), "id")
+            keyBy(cloneDeep(nodes), "id"),
+            customizer
           )
         );
         nextGraph.nodes = newNodes;
@@ -520,6 +528,7 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     const { edge = {}, isNew } = args;
     const { source, target } = edge as any;
     if (isNew) {
+
       // 处理边虚线样式更新的问题。
       const node = args.currentCell as BaseNode;
       const portId = edge.getTargetPortId();
@@ -542,6 +551,37 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
         };
         edge.setData(data);
         this.updateExperimentGraph([], [data]);
+        // 如果2个inPort都占用则新增一个inPort
+        const { cell: nodeId } = target as any;
+        const targetCell = this.getNodeById(nodeId)!;
+        let inPorts = groupBy(targetCell.getPorts(), "group")['in']
+        let connectedCount = 0
+
+        map(inPorts, (port) => {
+          if (port.connected) {
+            connectedCount++
+          }
+        })
+        if (inPorts.length > 1 && inPorts.length == connectedCount) {
+
+          targetCell.addPort({ id: `${Date.now()}`, group: "in", description: "输入" });
+
+          let newInPorts = map(groupBy(targetCell.getPorts(), "group")['in'], (port,index) => {
+            const { description, id } = port
+            return { sequence:index+1, description, id }
+          });
+
+          let customizer = (objValue, srcValue) => {
+            if (isArray(objValue)) {
+              return srcValue;
+            }
+          }
+          const nodeData = targetCell!.getData() as any;
+          const newData = mergeWith({}, nodeData, { inPorts: newInPorts }, customizer)
+          targetCell!.updateData(newData);
+          this.updateExperimentGraph([newData as any]);
+
+        }
       }
     }
 
@@ -553,12 +593,33 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
     try {
       const { edge } = args;
       const { target } = edge;
+
       const { cell: nodeId, port: portId } = target as any;
       if (nodeId) {
         const targetCell = this.getNodeById(nodeId)!;
         if (targetCell) {
-          // 触发 port 重新渲染
-          targetCell.setPortProp(portId, "connected", false);
+          // 大于2时做删除 否则 只是断开链接
+          const nodeData = targetCell!.getData() as any;
+          if (nodeData.inPorts.length > 2) {
+            targetCell.removePort(portId);
+            let newInPorts = map(groupBy(targetCell.getPorts(), "group")['in'], (port) => {
+              const { sequence, description, id } = port
+              if (portId != id) {
+                return { sequence, description, id }
+              }
+            });
+            let customizer = (objValue, srcValue) => {
+              if (isArray(objValue)) {
+                return srcValue;
+              }
+            }
+            const newData = mergeWith({}, nodeData, { inPorts: newInPorts }, customizer)
+            targetCell!.updateData(newData);
+            this.updateExperimentGraph([newData as any]);
+          } else {
+            targetCell.setPortProp(portId, "connected", false);
+          }
+
         }
       }
     } catch (error) {
@@ -848,7 +909,6 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   // 发起请求删除边
   requestDeleteEdges = async (edges: BaseEdge | BaseEdge[]) => {
     const targetEdges: BaseEdge[] = ([] as any[]).concat(edges);
-    console.log(targetEdges);
     this.deleteEdges(targetEdges);
     this.delExperimentGraphElement(
       [],
