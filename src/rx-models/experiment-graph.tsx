@@ -288,11 +288,15 @@ class ExperimentGraph extends GraphCore<BaseNode, BaseEdge> {
   async saveExperimentGraph() {
     const { experimentId } = this;
     const { nodes, links } = this.experimentGraph$.getValue();
+    const parseNodes = map(nodes, (node) => {
+      const { selected, ...others } = node;
+      return { ...others };
+    })
     emitter.emit("saveLoading"); // 保存按钮loading
     api
       .updateExperimentById(experimentId, {
         graph: {
-          nodes,
+          nodes: parseNodes,
           links,
         },
       })
