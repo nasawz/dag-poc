@@ -90,6 +90,37 @@ export const addNode = ({ name, x, y, ...others }: NodeParams) => {
     ]
     nodeStruct['inPorts'] = inPorts
   }
+  if (codeName === 'constant') {
+    let outPorts = [{
+      sequence: 1,
+      description: "输出",
+      id: id + "_out_1",
+    }]
+    nodeStruct['outPorts'] = outPorts
+    nodeStruct['data'] = { "constant": 0.0 }
+  }
+  if (codeName === 'express') {
+    let inPorts = [
+      {
+        sequence: 1,
+        description: "输入",
+        id: id + "_in_1",
+      },
+      {
+        sequence: 2,
+        description: "输入",
+        id: id + "_in_2",
+      }
+    ]
+    let outPorts = [{
+      sequence: 1,
+      description: "输出",
+      id: id + "_out_1",
+    }]
+    nodeStruct['inPorts'] = inPorts
+    nodeStruct['outPorts'] = outPorts
+    nodeStruct['data'] = { "express":"" }
+  }
   return nodeStruct;
 };
 
