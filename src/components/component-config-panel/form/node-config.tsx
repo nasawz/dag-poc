@@ -21,7 +21,7 @@ export const NodeFormDemo: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const [displayExpression, setDisplayExpression] = useState();
+  const [displayExpression, setDisplayExpression] = useState("");
   const expGraph = useExperimentGraph(experimentId);
   const [node] = useObservableState(() => expGraph.activeNodeInstance$);
 
@@ -55,7 +55,7 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   const onValuesChange = async ({ name, ...others }: { name: string }) => {
     //计算展示的expression
-    if (others["expression"] && node.codeName === "source_sum") {
+    if (others["expression"] && node.codeName === "express") {
       replaceNodeIdToName(others["expression"]);
     }
 
@@ -88,6 +88,10 @@ export const NodeFormDemo: React.FC<Props> = ({
   let sourceNodes = expGraph.findSourceByNode(nodeId);
 
   const replaceNodeIdToName = (expression) => {
+    if (!expression) {
+      setDisplayExpression("");
+      return;
+    }
     let newStr = expression;
     sourceNodes.forEach((item) => {
       newStr = newStr.replaceAll(item.id, item.name);
@@ -96,7 +100,7 @@ export const NodeFormDemo: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (node && node.codeName === "source_sum") {
+    if (node && node.codeName === "express") {
       replaceNodeIdToName(node?.data?.expression);
     }
   }, [node]);
@@ -118,7 +122,7 @@ export const NodeFormDemo: React.FC<Props> = ({
       </Form.Item>
 
       {/* 公式 */}
-      {node.codeName === "source_sum" && (
+      {node.codeName === "express" && (
         <div>
           <Form.Item name="expression" label="计算公式">
             <Mentions rows={3} prefix={["#"]}>
