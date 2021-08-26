@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, Form, Input } from "antd";
-import { keys, map } from 'lodash-es'
+import { keys, map } from "lodash-es";
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import "antd/lib/style/index.css";
 import { useObservableState } from "../../../hooks/useObservableState";
@@ -21,7 +21,7 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   const expGraph = useExperimentGraph(experimentId);
   const [node] = useObservableState(() => expGraph.activeNodeInstance$);
-  console.log('[activeNodeInstance]', node);
+  console.log("[activeNodeInstance]", node);
 
   const onValuesChange = async ({ name, ...others }: { name: string }) => {
     if (name && node.name !== name) {
@@ -31,25 +31,29 @@ export const NodeFormDemo: React.FC<Props> = ({
       if (node.data[key] !== others[key]) {
         await expGraph.updateNodeData(nodeId, { [key]: others[key] });
       }
-    })
+    });
   };
   let getInitialValues = () => {
     let v = {} as any;
     if (node) {
-      const { name, data } = node
+      const { name, data } = node;
       v.name = name;
 
       map(keys(data), (key) => {
         v[key] = data[key];
-      })
-
+      });
     }
     return v;
-  }
+  };
   // codeName: "table_field"
   if (!node) {
-    return <div />
+    return <div />;
   }
+
+  // console.log("nodeId============================>>>", nodeId);
+  let sourceNodes = expGraph.findSourceByNode(nodeId);
+  console.log(sourceNodes, "=======");
+
   return (
     <Form
       form={form}
