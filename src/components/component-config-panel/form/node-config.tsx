@@ -1,12 +1,11 @@
 import React from "react";
-import { Divider, Form, Input, InputNumber, Mentions, Row, Tag } from "antd";
+import { Divider, Form, Input, InputNumber } from "antd";
 import { keys, map } from "lodash-es";
 // import { useExperimentGraph } from '@/pages/rx-models/experiment-graph'
 import "antd/lib/style/index.css";
 import { useObservableState } from "../../../hooks/useObservableState";
 import { useExperimentGraph } from "../../../rx-models/experiment-graph";
-import { useState } from "react";
-import { useEffect } from "react";
+import FormItemExpress from "./form-item-express";
 
 export interface Props {
   name: string;
@@ -21,44 +20,10 @@ export const NodeFormDemo: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const [displayExpression, setDisplayExpression] = useState("");
   const expGraph = useExperimentGraph(experimentId);
   const [node] = useObservableState(() => expGraph.activeNodeInstance$);
 
-  // 展示计算公式
-  const renderExpression = (expression) => {
-    if (!expression) {
-      return "-";
-    }
-    const expressionTitle = expression;
-    if (expression) {
-      const expressionArr = expression.split(" ");
-      return expressionArr.map((item, index) => {
-        const patt = /([/#]{1})([\p{Unified_Ideograph}|\w(\/\w)?]+)/gu;
-        if (patt.test(item)) {
-          return (
-            <Tag key={index} color="blue" style={{ marginBottom: 8 }}>
-              {item}
-            </Tag>
-          );
-        } else {
-          return (
-            <span key={index} style={{ marginRight: 8, marginBottom: 8 }}>
-              {item}
-            </span>
-          );
-        }
-      });
-    }
-    return expressionTitle;
-  };
-
   const onValuesChange = async ({ name, ...others }: { name: string }) => {
-    //计算展示的expression
-    if (others["express"] && node.codeName === "express") {
-      replaceNodeIdToName(others["express"]);
-    }
-
     if (name && node.name !== name) {
       await expGraph.renameNode(nodeId, name);
     }
@@ -87,24 +52,6 @@ export const NodeFormDemo: React.FC<Props> = ({
 
   let sourceNodes = expGraph.findSourceByNode(nodeId);
 
-  const replaceNodeIdToName = (express) => {
-    if (!express) {
-      setDisplayExpression("");
-      return;
-    }
-    let newStr = express;
-    sourceNodes.forEach((item) => {
-      newStr = newStr.replaceAll(item.id, item.name);
-    });
-    setDisplayExpression(newStr);
-  };
-
-  useEffect(() => {
-    if (node && node.codeName === "express") {
-      replaceNodeIdToName(node?.data?.express);
-    }
-  }, [node]);
-
   return (
     <Form
       form={form}
@@ -123,18 +70,7 @@ export const NodeFormDemo: React.FC<Props> = ({
 
       {/* 公式 */}
       {node.codeName === "express" && (
-        <div>
-          <Form.Item name="express" label="计算公式">
-            <Mentions rows={3} prefix={["#"]}>
-              {sourceNodes.map(({ id, name }) => (
-                <Mentions.Option value={`s_${id}`} key={id}>
-                  {name}
-                </Mentions.Option>
-              ))}
-            </Mentions>
-          </Form.Item>
-          <div>{renderExpression(displayExpression)}</div>
-        </div>
+        <FormItemExpress node={node} sourceNodes={sourceNodes} />
       )}
 
       {/* 系数 */}
