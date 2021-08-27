@@ -29,6 +29,13 @@ module.exports = (webpackConfigEnv, argv) => {
     module: {
       rules: [
         {
+          loader: "url-loader",
+          test: /\.(eot|ttf|woff|woff2|png|jpe?g|gif|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          options: {
+            limit: 10000
+          }
+        },
+        {
           test: /\.less$/,
           use: [
             {
@@ -78,12 +85,12 @@ module.exports = (webpackConfigEnv, argv) => {
           target: 'http://192.168.1.238:1337',
           pathRewrite: { '^/api': '' },
         },
-        '/socket':{
+        '/socket': {
           target: 'http://192.168.1.238:1337',
-          ws:true,
+          ws: true,
           changeOrigin: true,
           pathRewrite: {
-            '^/socket':'/'
+            '^/socket': '/'
           }
         }
       },
