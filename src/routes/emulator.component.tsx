@@ -128,7 +128,7 @@ export default function TemplateComponent(props: ITemplateComponentProps) {
                         },
                         "x-decorator-props": {},
                         "_designableId": Math.random().toString(36).substr(2),
-                        "default": 0,
+                        "default": i.data.constant ? i.data.constant : 0,
                         "x-index": index
                     }
                 }
@@ -188,36 +188,36 @@ export default function TemplateComponent(props: ITemplateComponentProps) {
 
     return (
         <Layout className={styles.layout}>
-            <Content className={styles.content}>
-                {/* <div>{JSON.stringify(categoriesJson)}</div> */}
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        background: '#eee',
-                        padding: '40px 0',
-                        width: '100%'
-                    }}
-                >
-                    <Card title="数据模拟器" style={{ width: 620 }}>
-                        <Spin spinning={loading}>
-                            {canRender && <Form
-                                form={form}
-                                labelCol={5}
-                                wrapperCol={16}
-                                onAutoSubmit={console.log}
-                            >
-                                <SchemaField schema={categoriesJson} scope={{}} />
-                                <FormButtonGroup.FormItem>
-                                    <Submit block size="large">
-                                        提交
-                                    </Submit>
-                                </FormButtonGroup.FormItem>
-                            </Form>}
-                        </Spin>
-                    </Card>
-                </div>
-            </Content>
+            {/* <Content className={styles.content}> */}
+            {/* <div>{JSON.stringify(categoriesJson)}</div> */}
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    background: '#fff',
+                    width: '100%',
+                    height: '100%'
+                }}
+            >
+                <Card title="数据模拟器" style={{ width: 620 }}>
+                    <Spin spinning={loading}>
+                        {canRender && <Form
+                            form={form}
+                            labelCol={5}
+                            wrapperCol={16}
+                            onAutoSubmit={console.log}
+                        >
+                            <SchemaField schema={categoriesJson} scope={{}} />
+                            <FormButtonGroup.FormItem>
+                                <Submit block size="large">
+                                    提交
+                                </Submit>
+                            </FormButtonGroup.FormItem>
+                        </Form>}
+                    </Spin>
+                </Card>
+            </div>
+            {/* </Content> */}
         </Layout>
     );
 }
