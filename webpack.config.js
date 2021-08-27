@@ -29,6 +29,13 @@ module.exports = (webpackConfigEnv, argv) => {
     module: {
       rules: [
         {
+          loader: "url-loader",
+          test: /\.(eot|ttf|woff|woff2|png|jpe?g|gif|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          options: {
+            limit: 10000
+          }
+        },
+        {
           test: /\.less$/,
           use: [
             {
