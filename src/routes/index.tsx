@@ -2,13 +2,15 @@ import * as React from "react";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import TemplateComponent from "./template.component"
+import EmulatorComponent from "./emulator.component"
 export interface IAppProps { }
 
 export default function App(props: IAppProps) {
   return (
     <Router basename={"/experiment"}>
       <Switch>
-        <Route path={"/:experimentId"} component={TemplateComponent} />
+        <Route path={"/designer/:experimentId"} component={TemplateComponent} />
+        <Route path={"/emulator/:experimentId"} component={EmulatorComponent} />
       </Switch>
     </Router>
   );

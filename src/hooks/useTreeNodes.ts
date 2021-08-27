@@ -16,7 +16,7 @@ export function useTreeNodes() {
       
     //   const data = api.parseRes(res);
     //   mutate(KEY, data.data, false);
-      return data.data;
+      return res.data;
     };
 
   
